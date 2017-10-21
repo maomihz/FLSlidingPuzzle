@@ -50,7 +50,6 @@ int main(int argc, char **argv) {
     box->labeltype(FL_SHADOW_LABEL);
     window->end();
     window->show(argc, argv);
-    int b = 0;
 
     return Fl::run();
 }
