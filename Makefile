@@ -1,7 +1,7 @@
 # Configuration
 CC = $(shell fltk-config --cxx)
-SRCS = $(wildcard *.cpp)
-OBJS = ${SRCS:.cpp=.o}
+SRCS = $(wildcard src/*.cpp)
+OBJS = $(notdir ${SRCS:.cpp=.o})
 BASEFLAGS = -g -Wall -Wextra -std=c++11 -Wno-unused-parameter -Wno-unused-variable
 TARGET = FLSlidingPuzzle
 
@@ -14,13 +14,20 @@ LDFLAGS = $(BASEFLAGS) $(shell fltk-config --use-images --ldflags)
 
 all: $(TARGET)
 
+board.o: src/board.cpp src/board.h
+game.o: src/game.cpp src/game.h
+point.o: src/point.cpp src/point.h
+src/board.h: src/point.h
+src/game.h:
+src/point.h:
+
 # Linking
-$(TARGET): $(OBJS) $(LIB)
+$(TARGET): $(OBJS)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 # Compiling
-%.o: %.cpp
-	$(CC) $(CFLAGS) -c -o $@ $^
+%.o: src/%.cpp
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
 	$(RM) $(TARGET) $(OBJS)

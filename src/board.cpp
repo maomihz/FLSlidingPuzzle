@@ -1,4 +1,4 @@
-#include "puzzle.h"
+#include "board.h"
 #include <stdexcept>
 #include <cstdlib>
 #include <ctime>
@@ -11,19 +11,26 @@ using namespace SPuzzle;
 
 // Initialize a board with a specified size
 Board::Board(int size) :
-    size(size),
-    len(size * size),
-    last(Point(size - 1, size - 1))
+    _size(size),
+    _len(size * size),
+    _last(Point(size - 1, size - 1))
 {
     // Board size should not be less than 3
     if (size < 3)
          throw std::runtime_error("Puzzle size should not be less than 4");
 
     // Initialize the board to a long array
-    board = new int[len];
+    board = new int[_len];
 
 	// Reset to the initial state
     reset();
+}
+
+Board::Board(Board &another) : Board(another.size()) {
+    for (int i = 0; i < len(); ++i) {
+        at(i) = another.at(i);
+    }
+    _space = another._space;
 }
 
 // ================================================
@@ -53,7 +60,7 @@ int& Board::at(Point p) const {
 // If the location which is going to swap with the empty space
 // is valid then the move is valid.
 bool Board::can_move(int dir) const {
-    Point next = space + DIRECTIONS[dir];
+    Point next = _space + DIRECTIONS[dir];
     return valid(next);
 }
 
@@ -65,13 +72,15 @@ bool Board::move(int dir) {
     // Still check validity first
     if (!can_move(dir)) return false;
 
-    Point next = DIRECTIONS[dir] + space;
-    swap(space, next);
-    space = next;
+    Point next = DIRECTIONS[dir] + _space;
+    swap(_space, next);
+    _space = next;
     return true;
 }
-
-
+bool Board::up() {return move(UP);}
+bool Board::down() {return move(DOWN);}
+bool Board::left() {return move(LEFT);}
+bool Board::right() {return move(RIGHT);}
 
 
 
@@ -79,11 +88,11 @@ bool Board::move(int dir) {
 // The initial state is the winning state.
 void Board::reset() {
     // Assign the numbers in order, except the last one
-    for (int i = 0; i < repr(last); ++i) {
+    for (int i = 0; i < repr(_last); ++i) {
         at(i) = i + 1;
     }
-    at(last) = 0;    // Set the last one to zero
-    space = last;    // Set the space location to the last one
+    at(_last) = 0;    // Set the last one to zero
+    _space = _last;    // Set the space location to the last one
 }
 
 
@@ -93,17 +102,22 @@ void Board::reset() {
 // in the initial state or not
 void Board::shuffle() {
     // Restore the location of empty space first
-    swap(space, last);
-    space = last;
+    swap(_space, _last);
+    _space = _last;
 
     // Trust the rand() function and do the shuffling
     // Skip the last location
-    for (int i = 0; i < repr(last); ++i) {
+    for (int i = 0; i < repr(_last) - 1; ++i) {
         // It is valid if the chosen point is itself.
-        int to_swap = rand() % (repr(last) - i) + i;
+        int to_swap = rand() % (repr(_last) - i) + i;
         swap(i, to_swap);
     }
-    // ****==== TODO: Check if solvable or not ====****
+
+    while (!solvable()) {
+        int loc1 = rand() % repr(_last);
+        int loc2 = rand() % repr(_last);
+        swap(loc1, loc2);
+    }
 }
 
 
@@ -114,7 +128,7 @@ bool Board::win() const {
     // Check everything except the last one
     // If everything except the last one is equal to the
     // winning position then the last one must be zero
-    for (int i = 0; i < size * size - 1; ++i) {
+    for (int i = 0; i < _size * _size - 1; ++i) {
         if (at(i) != i) {
             return false;
         }
@@ -124,9 +138,26 @@ bool Board::win() const {
 }
 
 
-
+// Check whether the game board is solvable
+// http://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
 bool Board::solvable() const {
-    return false;
+    int count = 0;
+    for (int i = 0; i < repr(_last); ++i) {
+        for (int j = i + 1; j < _len; ++j) {
+            if (board[j] && board[i] && board[i] > board[j]) {
+                ++ count;
+            }
+        }
+    }
+    if (_size & 1) {
+        return !(count & 1);
+    } else {
+        if ((_size - _space.x) & 1) {
+            return !(count & 1);
+        } else {
+            return count & 1;
+        }
+    }
 }
 
 
@@ -136,13 +167,13 @@ bool Board::solvable() const {
 // ================================================
 // Convert the "internal" representation to point or back
 int Board::repr(int x, int y) const {
-    return x * size + y;
+    return x * _size + y;
 }
 int Board::repr(Point p) const {
     return repr(p.x, p.y);
 }
 Point Board::to_point(int repr) const {
-    return Point(repr / size, repr % size);
+    return Point(repr / _size, repr % _size);
 }
 
 
@@ -177,11 +208,29 @@ void Board::swap(Point a, Point b) {
 // If the point is within the borders then the point is valid.
 // Check both x coordinate and y coordinate
 bool Board::valid(int x, int y) const {
-    return (x >= 0 && x < size && y >= 0 && y < size);
+    return (x >= 0 && x < _size && y >= 0 && y < _size);
 }
 bool Board::valid(int repr) const {
     return valid(to_point(repr));
 }
 bool Board::valid(Point p) const {
     return valid(p.x, p.y);
+}
+
+
+
+
+
+// =====================================
+// ------- Some other functions --------
+// =====================================
+
+std::ostream& operator<<(std::ostream& os, Board b) {
+    for (int i = 0; i < b.len(); ++i) {
+        os << std::setw(3) << b.at(i);
+        if ((i + 1) % b.size() == 0) {
+            os << std::endl;
+        }
+    }
+    return os;
 }

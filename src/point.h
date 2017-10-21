@@ -1,3 +1,4 @@
+#include <iostream>
 #pragma once
 
 namespace SPuzzle {
@@ -23,3 +24,5 @@ namespace SPuzzle {
         bool operator!=(const Point a) const;
     };
 };
+
+std::ostream& operator<<(std::ostream& os, SPuzzle::Point p);

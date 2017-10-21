@@ -1,8 +1,26 @@
 #include "point.h"
+#include <iostream>
+#include <iomanip>
 
 #pragma once
 
 namespace SPuzzle {
+    // ===== Some constants ======
+    // Constants to represent moving direction
+    const int UP = 0;
+    const int DOWN = 1;
+    const int LEFT = 2;
+    const int RIGHT = 3;
+
+    // A map for constant to point. These points can be added to a existing
+    // point to calculate the coordinate the point is moving to.
+    const Point DIRECTIONS[] = {
+        Point(1, 0),   // Up
+        Point(-1, 0),    // Down
+        Point(0, 1),   // Left
+        Point(0, -1)     // Right
+    };
+
     // ====== the Board class used to represent a game board ======
     class Board {
     private:
@@ -11,10 +29,10 @@ namespace SPuzzle {
 
         // Some variables associated with the array
         // for easier access.
-        int size;      // The size of the board
-        int len;       // The length of the array, equals to size squared
-        Point last;    // The last point in the board
-        Point space;   // The index of empty space
+        int _size;      // The size of the board
+        int _len;       // The length of the array, equals to size squared
+        Point _last;    // The last point in the board
+        Point _space;   // The index of empty space
 
     	// The main storage uses a one-dimensional array, therefore
         // there is two different representation of the coordinates.
@@ -40,6 +58,7 @@ namespace SPuzzle {
 
     public:
         Board(int size = 4);              // Constructor, defaults to size 4
+        Board(Board &another);            // Copy constructor
 
         int& at(int x, int y) const;      // Content of a location using x,y
         int& at(int repr) const;          // Content of a location using index
@@ -47,6 +66,10 @@ namespace SPuzzle {
 
         bool can_move(int dir) const;     // Can move or not
         bool move(int dir);               // Move in one direction
+        bool up();                        // Convenient functions to move
+        bool down();
+        bool left();
+        bool right();
 
         void reset();             // Reset board to initial location
         void shuffle();           // Shuffle the board
@@ -57,5 +80,12 @@ namespace SPuzzle {
 
         bool solvable() const;    // Check if the board is solvable
 
+        int size() const {return _size;}
+        int len() const {return _len;}
+        Point last() const {return _last;}
+        Point space() const {return _space;}
+
     };
+
 };
+std::ostream& operator<<(std::ostream& os, SPuzzle::Board b);

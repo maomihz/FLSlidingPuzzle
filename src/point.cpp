@@ -61,3 +61,9 @@ bool Point::operator==(const Point a) const {
 bool Point::operator!=(const Point a) const {
     return !((*this) == a);
 }
+
+
+std::ostream& operator<<(std::ostream& os, SPuzzle::Point p) {
+    os << "(" << p.x << "," << p.y << ")";
+    return os;
+}
