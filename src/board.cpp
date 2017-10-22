@@ -15,22 +15,21 @@ Board::Board(int size) :
     _len(size * size),
     _last(Point(size - 1, size - 1))
 {
-    // Board size should not be less than 3
-    if (size < 3)
-         throw std::runtime_error("Puzzle size should not be less than 4");
-
-    // Initialize the board to a long array
-    board = new int[_len];
-
-	// Reset to the initial state
-    reset();
+    board = new int[_len];  // Initialize to a long array
+    reset();                // Reset the state
 }
 
+// Copy constructor
 Board::Board(Board &another) : Board(another.size()) {
     for (int i = 0; i < len(); ++i) {
         at(i) = another.at(i);
     }
     _space = another._space;
+}
+
+// Destructor
+Board::~Board() {
+    delete [] board;
 }
 
 // ================================================

@@ -1,0 +1,52 @@
+#include "game.h"
+
+using namespace SPuzzle;
+
+// ====== Constructors & Destructors ======
+Game::Game(int size) :
+    _board(new Board(size)),
+    _solution(new Board(size)),
+    _steps(0)
+{
+    new_game();
+}
+
+Game::~Game() {
+    delete _board;
+    delete _solution;
+}
+
+
+// ===== Function Implementations =====
+void Game::new_game() {
+    _board->shuffle();
+    _steps = 0;
+    start_time = now();
+}
+
+void Game::pause() {
+    // Only take action if the game is not paused
+    if (!_paused) {
+        pause_start = now();
+        _paused = true;
+    }
+}
+
+void Game::resume() {
+    // Only take action if the game is paused
+    if (_paused) {
+        pause_duration += (now() - pause_start);
+        _paused = false;
+    }
+}
+
+
+
+// Accessers
+Board* Game::board() { return _board; }
+Board* Game::solution() { return _solution; }
+int Game::steps() { return _steps; }
+int Game::duration() {
+    return (now() - start_time - pause_duration).count();
+}
+bool Game::paused() { return _paused; }

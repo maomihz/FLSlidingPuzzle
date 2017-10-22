@@ -59,6 +59,7 @@ namespace SPuzzle {
     public:
         Board(int size = 4);              // Constructor, defaults to size 4
         Board(Board &another);            // Copy constructor
+        ~Board();                         // Destructor
 
         int& at(int x, int y) const;      // Content of a location using x,y
         int& at(int repr) const;          // Content of a location using index
@@ -80,6 +81,7 @@ namespace SPuzzle {
 
         bool solvable() const;    // Check if the board is solvable
 
+        // Several accesser functions
         int size() const {return _size;}
         int len() const {return _len;}
         Point last() const {return _last;}
