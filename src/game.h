@@ -39,6 +39,12 @@ namespace SPuzzle {
         void pause();        // Pause the game
         void resume();       // Resume the game
 
+        // Control the game
+        void up();
+        void down();
+        void left();
+        void right();
+
         Board* board();
         Board* solution();
         int steps();

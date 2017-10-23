@@ -41,8 +41,22 @@ void Game::resume() {
 }
 
 
+void Game::up() {
+    if (_board->up()) ++_steps;
+}
+void Game::down() {
+    if (_board->down()) ++_steps;
+}
+void Game::left() {
+    if (_board->left()) ++_steps;
+}
+void Game::right() {
+    if (_board->right()) ++_steps;
+}
 
-// Accessers
+
+
+// ====== Accessers =======
 Board* Game::board() { return _board; }
 Board* Game::solution() { return _solution; }
 int Game::steps() { return _steps; }
