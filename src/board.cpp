@@ -129,7 +129,6 @@ bool Board::win() const {
     // winning position then the last one must be zero
     for (int i = 0; i < repr(_last); ++i) {
         if (at(i) != i + 1) {
-            std::cout << at(i) << "!=" << i+1 << std::endl;
             return false;
         }
     }

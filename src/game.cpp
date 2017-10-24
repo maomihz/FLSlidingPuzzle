@@ -19,7 +19,7 @@ Game::~Game() {
 
 // ===== Function Implementations =====
 void Game::new_game() {
-    // _board.shuffle();
+    _board.shuffle();
     _steps = 0;
     start_time = now();
 }

@@ -14,9 +14,9 @@ class GameBoard : Fl_Box {
 public:
     SPuzzle::Game game;   // The game the board represents
     GameBoard(int x, int y, int w, int h, int size = 4)
-        : Fl_Box(x, y, w, h, NULL), game(size) {
-            // box(FL_UP_BOX);
-        }
+        : Fl_Box(x, y, w, h, NULL), game(size) {}
+
+    // Override the draw function and event handle function
     void draw();
     int handle(int event);
 };
