@@ -127,8 +127,9 @@ bool Board::win() const {
     // Check everything except the last one
     // If everything except the last one is equal to the
     // winning position then the last one must be zero
-    for (int i = 0; i < _size * _size - 1; ++i) {
-        if (at(i) != i) {
+    for (int i = 0; i < repr(_last); ++i) {
+        if (at(i) != i + 1) {
+            std::cout << at(i) << "!=" << i+1 << std::endl;
             return false;
         }
     }
@@ -224,7 +225,7 @@ bool Board::valid(Point p) const {
 // ------- Some other functions --------
 // =====================================
 
-std::ostream& operator<<(std::ostream& os, Board b) {
+std::ostream& operator<<(std::ostream& os, const Board& b) {
     for (int i = 0; i < b.len(); ++i) {
         os << std::setw(3) << b.at(i);
         if ((i + 1) % b.size() == 0) {

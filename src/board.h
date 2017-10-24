@@ -90,4 +90,4 @@ namespace SPuzzle {
     };
 
 };
-std::ostream& operator<<(std::ostream& os, SPuzzle::Board b);
+std::ostream& operator<<(std::ostream& os, const SPuzzle::Board& b);
