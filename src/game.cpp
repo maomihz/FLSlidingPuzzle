@@ -4,63 +4,63 @@ using namespace SPuzzle;
 
 // ====== Constructors & Destructors ======
 Game::Game(int size) :
-    _board(size),
-    _solution(size),
-    _steps(0)
+    board_(size),
+    solution_(size),
+    steps_(0)
 {
     new_game();
 }
 
 Game::~Game() {
-    // delete _board;
-    // delete _solution;
+    // delete board_;
+    // delete solution_;
 }
 
 
 // ===== Function Implementations =====
 void Game::new_game() {
-    _board.shuffle();
-    _steps = 0;
+    board_.shuffle();
+    steps_ = 0;
     start_time = now();
 }
 
 void Game::pause() {
     // Only take action if the game is not paused
-    if (!_paused) {
+    if (!paused_) {
         pause_start = now();
-        _paused = true;
+        paused_ = true;
     }
 }
 
 void Game::resume() {
     // Only take action if the game is paused
-    if (_paused) {
+    if (paused_) {
         pause_duration += (now() - pause_start);
-        _paused = false;
+        paused_ = false;
     }
 }
 
 
 void Game::up() {
-    if (_board.up()) ++_steps;
+    if (board_.up()) ++steps_;
 }
 void Game::down() {
-    if (_board.down()) ++_steps;
+    if (board_.down()) ++steps_;
 }
 void Game::left() {
-    if (_board.left()) ++_steps;
+    if (board_.left()) ++steps_;
 }
 void Game::right() {
-    if (_board.right()) ++_steps;
+    if (board_.right()) ++steps_;
 }
 
 
 
 // ====== Accessers =======
-Board Game::board() { return _board; }
-Board Game::solution() { return _solution; }
-int Game::steps() const { return _steps; }
+Board Game::board() { return board_; }
+Board Game::solution() { return solution_; }
+int Game::steps() const { return steps_; }
 int Game::duration() {
     return (now() - start_time - pause_duration).count();
 }
-bool Game::paused() const { return _paused; }
+bool Game::paused() const { return paused_; }

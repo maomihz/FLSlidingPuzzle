@@ -29,10 +29,10 @@ namespace SPuzzle {
 
         // Some variables associated with the array
         // for easier access.
-        int _size;      // The size of the board
-        int _len;       // The length of the array, equals to size squared
-        Point _last;    // The last point in the board
-        Point _space;   // The index of empty space
+        int size_;      // The size of the board
+        int len_;       // The length of the array, equals to size squared
+        Point last_;    // The last point in the board
+        Point space_;   // The index of empty space
 
     	// The main storage uses a one-dimensional array, therefore
         // there is two different representation of the coordinates.
@@ -82,10 +82,10 @@ namespace SPuzzle {
         bool solvable() const;    // Check if the board is solvable
 
         // Several accesser functions
-        int size() const {return _size;}
-        int len() const {return _len;}
-        Point last() const {return _last;}
-        Point space() const {return _space;}
+        int size() const {return size_;}
+        int len() const {return len_;}
+        Point last() const {return last_;}
+        Point space() const {return space_;}
 
     };
 

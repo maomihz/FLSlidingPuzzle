@@ -12,10 +12,10 @@ using std::chrono::duration_cast;
 namespace SPuzzle {
     class Game {
     private:
-        Board _board;          // The pointer to the game board
-        Board _solution;       // The solution of the current game board
-        int _steps;             // Number of moves
-        bool _paused;
+        Board board_;          // The pointer to the game board
+        Board solution_;       // The solution of the current game board
+        int steps_;             // Number of moves
+        bool paused_;
 
         // The time the game lasts is the current time minus the starting
         // time, not including the total pause. After each pause ends,
@@ -50,6 +50,5 @@ namespace SPuzzle {
         int steps() const;
         int duration();         // calculated duration of the game in seconds
         bool paused() const;
-
     };
 }
