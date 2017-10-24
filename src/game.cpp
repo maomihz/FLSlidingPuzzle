@@ -59,6 +59,6 @@ Board Game::board() { return board_; }
 Board Game::solution() { return solution_; }
 int Game::steps() const { return steps_; }
 int Game::duration() {
-    return (now() - start_time - pause_duration).count();
+    return (now() - start_time - pause_duration).count() / 1000;
 }
 bool Game::paused() const { return paused_; }

@@ -14,12 +14,12 @@ void GameBoard::draw() {
     // Draw the numbers
     fl_color(FL_BLACK);
     fl_font(FL_BOLD, 29);
-    for (int i = 0; i < 4; ++i) {
-        for (int j = 0; j < 4; ++j) {
+    for (int j = 0; j < 4; ++j) {
+        for (int i = 0; i < 4; ++i) {
             int num = game.board().at(i,j);
             const char* numstr = std::to_string(num).c_str();
             if (num != 0)
-                fl_draw(numstr, x() + j * 100, y() + i * 100,
+                fl_draw(numstr, x() + i * 100, y() + j * 100,
                 100, 100, FL_ALIGN_INSIDE);
                 // fl_rect(x() + j * 100, y() + i * 100)
         }

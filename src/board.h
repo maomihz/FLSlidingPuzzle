@@ -1,4 +1,5 @@
 #include "point.h"
+#include <string>
 #include <iostream>
 #include <iomanip>
 
@@ -14,11 +15,13 @@ namespace SPuzzle {
 
     // A map for constant to point. These points can be added to a existing
     // point to calculate the coordinate the point is moving to.
+    // The direction is actually reversed because if you are moving up
+    // then the space is moving down.
     const Point DIRECTIONS[] = {
-        Point(1, 0),   // Up
-        Point(-1, 0),    // Down
-        Point(0, 1),   // Left
-        Point(0, -1)     // Right
+        Point(0, 1),   // Up
+        Point(0, -1),    // Down
+        Point(1, 0),   // Left
+        Point(-1, 0)     // Right
     };
 
     // ====== the Board class used to represent a game board ======
@@ -42,6 +45,13 @@ namespace SPuzzle {
         // Note that the functions in this class usually takes three
         // different forms, you can pass either x, y or a Point object
         // or a internal (index) representation to express the coordinate.
+        //
+        // The board looks like this:
+        // (0,0) (1,0) (2,0) (3,0)  ==>  0  1  2  3
+        // (0,1) (1,1) (2,1) (3,1)  ==>  4  5  6  7
+        // (0,2) (1,2) (2,2) (3,2)  ==>  8  9  10 11
+        // (0,3) (1,3) (2,3) (3,3)  ==>  12 13 14 15
+        // Therefore the conversion would be y * size + x
         int repr(int x, int y) const;     // Convert a point to index (x, y)
         int repr(Point p) const;          // Convert a point to index (Point)
         Point to_point(int repr) const;   // Convert an index to a Point
@@ -65,11 +75,18 @@ namespace SPuzzle {
         int& at(int repr) const;          // Content of a location using index
         int& at(Point p) const;           // Content of a location using Point
 
+        std::string at_str(int x, int y) const;
+        std::string at_str(int repr) const;
+        std::string at_str(Point p) const;
+
         bool can_move(int dir) const;     // Can move or not
         bool move(int dir);               // Move in one direction
 
         void reset();             // Reset board to initial location
         void shuffle();           // Shuffle the board
+        int correct_count() const;// Count the number of tiles that is in the
+                                  // correct location. 0 <= n < len, not
+                                  // including the space tile.
         bool win() const;         // Check if the board is in winning position.
                                   // The initial position is always the winning
                                   // postition.

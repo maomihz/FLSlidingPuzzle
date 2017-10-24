@@ -52,6 +52,18 @@ int& Board::at(Point p) const {
     return at(p.x, p.y);
 }
 
+// Get the content of a particular coordinate in string
+std::string Board::at_str(int x, int y) const {
+    return std::to_string(at(x, y));
+}
+std::string Board::at_str(int repr) const {
+    return std::to_string(at(repr));
+}
+std::string Board::at_str(Point p) const {
+    return std::to_string(at(p));
+}
+
+
 
 
 
@@ -116,6 +128,14 @@ void Board::shuffle() {
 
 
 
+// Check how many tiles are in the winning position.
+int Board::correct_count() const {
+    int count;
+    for (int i = 0; i < repr(last_); ++i) {
+        if (at(i) == i + 1) ++count;
+    }
+    return count;
+}
 
 // Check whether the layout is equal to the winning position.
 bool Board::win() const {
@@ -123,9 +143,7 @@ bool Board::win() const {
     // If everything except the last one is equal to the
     // winning position then the last one must be zero
     for (int i = 0; i < repr(last_); ++i) {
-        if (at(i) != i + 1) {
-            return false;
-        }
+        if (at(i) != i + 1) return false;
     }
     // Otherwise, return true
     return true;
@@ -146,7 +164,7 @@ bool Board::solvable() const {
     if (size_ & 1) {
         return !(count & 1);
     } else {
-        if ((size_ - space_.x) & 1) {
+        if ((size_ - space_.y) & 1) {
             return !(count & 1);
         } else {
             return count & 1;
@@ -161,13 +179,13 @@ bool Board::solvable() const {
 // ================================================
 // Convert the "internal" representation to point or back
 int Board::repr(int x, int y) const {
-    return x * size_ + y;
+    return y * size_ + x;
 }
 int Board::repr(Point p) const {
     return repr(p.x, p.y);
 }
 Point Board::to_point(int repr) const {
-    return Point(repr / size_, repr % size_);
+    return Point(repr % size_, repr / size_);
 }
 
 
@@ -220,11 +238,11 @@ bool Board::valid(Point p) const {
 // =====================================
 
 std::ostream& operator<<(std::ostream& os, const Board& b) {
-    for (int i = 0; i < b.len(); ++i) {
-        os << std::setw(3) << b.at(i);
-        if ((i + 1) % b.size() == 0) {
-            os << std::endl;
+    for (int y = 0; y < b.size(); ++y) {
+        for (int x = 0; x < b.size(); ++x) {
+            os << std::setw(3) << b.at(x,y);
         }
+        os << std::endl;
     }
     return os;
 }
