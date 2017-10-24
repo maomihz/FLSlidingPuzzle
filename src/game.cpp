@@ -11,13 +11,11 @@ Game::Game(int size) :
     new_game();
 }
 
-Game::~Game() {
-    // delete board_;
-    // delete solution_;
-}
+Game::~Game() {}
 
 
 // ===== Function Implementations =====
+// Start a new game, shuffle the board and reset variables.
 void Game::new_game() {
     board_.shuffle();
     steps_ = 0;
@@ -42,16 +40,16 @@ void Game::resume() {
 
 
 void Game::up() {
-    if (board_.up()) ++steps_;
+    if (board_.move(UP)) ++steps_;
 }
 void Game::down() {
-    if (board_.down()) ++steps_;
+    if (board_.move(DOWN)) ++steps_;
 }
 void Game::left() {
-    if (board_.left()) ++steps_;
+    if (board_.move(LEFT)) ++steps_;
 }
 void Game::right() {
-    if (board_.right()) ++steps_;
+    if (board_.move(RIGHT)) ++steps_;
 }
 
 

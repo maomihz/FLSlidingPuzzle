@@ -76,11 +76,6 @@ bool Board::move(int dir) {
     space_ = next;
     return true;
 }
-bool Board::up() {return move(UP);}
-bool Board::down() {return move(DOWN);}
-bool Board::left() {return move(LEFT);}
-bool Board::right() {return move(RIGHT);}
-
 
 
 // Resets the board to the initial state.
