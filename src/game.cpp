@@ -19,7 +19,6 @@ Game::~Game() {}
 void Game::new_game() {
     board_.shuffle();
     steps_ = 0;
-    start_time = now();
 }
 
 void Game::pause() {
@@ -38,18 +37,27 @@ void Game::resume() {
     }
 }
 
+void Game::start() {
+    start_time = now();
+    started_ = true;
+}
+
 
 void Game::up() {
     if (board_.move(UP)) ++steps_;
+    if (!started_) start();
 }
 void Game::down() {
     if (board_.move(DOWN)) ++steps_;
+    if (!started_) start();
 }
 void Game::left() {
     if (board_.move(LEFT)) ++steps_;
+    if (!started_) start();
 }
 void Game::right() {
     if (board_.move(RIGHT)) ++steps_;
+    if (!started_) start();
 }
 
 
@@ -58,8 +66,13 @@ void Game::right() {
 Board Game::board() { return board_; }
 Board Game::solution() { return solution_; }
 int Game::steps() const { return steps_; }
-int Game::duration() {
-    cout << start_time << ":" << now() << endl;
-    return (now() - start_time - pause_duration).count() / 1000;
+int Game::duration() const {
+    // If the game has not started then always return 0
+    if (!started_) {
+        return 0;
+    }
+    // Otherwise return the actual time
+    return (now() - start_time - pause_duration).count();
 }
 bool Game::paused() const { return paused_; }
+bool Game::started() const { return started_; }

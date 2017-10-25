@@ -25,11 +25,10 @@ void InfoBoard::draw() {
 
     // build the time
     int duration = game->duration();
-    std::cout << duration << std::endl;
     std::stringstream ss;
-    ss << std::setw(2) << std::setfill('0') << duration / 60;
+    ss << std::setw(2) << std::setfill('0') << duration / 60000;
     ss << ":";
-    ss << std::setw(2) << std::setfill('0') << duration % 60;
+    ss << std::setw(2) << std::setfill('0') << duration / 1000 % 60;
     fl_draw(ss.str().c_str(),
         x(), y() + 150,
         100, 50, FL_ALIGN_INSIDE);

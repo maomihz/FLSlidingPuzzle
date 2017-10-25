@@ -17,7 +17,7 @@ Game *game;
 
 void update_count(void*) {
     ib->redraw();
-    Fl::add_timeout(0.1, update_count);
+    Fl::add_timeout(0.05, update_count);
 }
 
 int main(int argc, char **argv) {

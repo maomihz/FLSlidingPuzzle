@@ -130,7 +130,7 @@ void Board::shuffle() {
 
 // Check how many tiles are in the winning position.
 int Board::correct_count() const {
-    int count;
+    int count = 0;
     for (int i = 0; i < repr(last_); ++i) {
         if (at(i) == i + 1) ++count;
     }

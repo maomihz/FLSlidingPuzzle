@@ -14,8 +14,9 @@ namespace SPuzzle {
     private:
         Board board_;          // The pointer to the game board
         Board solution_;       // The solution of the current game board
-        int steps_;             // Number of moves
+        int steps_;            // Number of moves
         bool paused_;
+        bool started_;         // Whether the game has started or not
 
         // The time the game lasts is the current time minus the starting
         // time, not including the total pause. After each pause ends,
@@ -24,7 +25,7 @@ namespace SPuzzle {
         milliseconds pause_start;
         milliseconds pause_duration; // Total duration of the pause
 
-        milliseconds now() {
+        milliseconds now() const {
             return duration_cast<milliseconds>(system_clock::now().time_since_epoch());
         }
     public:
@@ -38,6 +39,9 @@ namespace SPuzzle {
         void new_game();     // Start a new game
         void pause();        // Pause the game
         void resume();       // Resume the game
+        void start();        // Start the game. The game automatically start
+                             // when the player makes the first move. Manually
+                             // calling start resets the timer.
 
         // Control the game
         void up();
@@ -48,7 +52,8 @@ namespace SPuzzle {
         Board board();
         Board solution();
         int steps() const;
-        int duration();         // calculated duration of the game in seconds
+        int duration() const; // calculated duration of the game in milliseconds
         bool paused() const;
+        bool started() const;
     };
 }
