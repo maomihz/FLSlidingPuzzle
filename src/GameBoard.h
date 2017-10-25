@@ -10,11 +10,11 @@
 
 #pragma once
 
-class GameBoard : Fl_Box {
+class GameBoard : public Fl_Box {
 public:
-    SPuzzle::Game game;   // The game the board represents
-    GameBoard(int x, int y, int w, int h, int size = 4)
-        : Fl_Box(x, y, w, h, NULL), game(size) {}
+    SPuzzle::Game* game;   // The game the board represents
+    GameBoard(int x, int y, int w, int h, SPuzzle::Game* game)
+        : Fl_Box(x, y, w, h, NULL), game(game) {}
 
     // Override the draw function and event handle function
     void draw();

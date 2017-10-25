@@ -18,6 +18,7 @@ board.o: src/board.cpp src/board.h
 game.o: src/game.cpp src/game.h
 point.o: src/point.cpp src/point.h
 FLSlidingPuzzle.o: src/GameBoard.h
+GameBoard.o: src/GameBoard.cpp src/GameBoard.h
 
 src/GameBoard.h: src/game.h
 src/board.h: src/point.h

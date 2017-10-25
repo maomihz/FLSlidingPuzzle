@@ -6,18 +6,22 @@
 #include <cstdlib>
 
 using namespace std;
+using SPuzzle::Game;
 
 Fl_Window *win;
 GameBoard *gb;
 
-
-// void new_game(Fl_Widget* w, void* args) {
-//     gb->game.new_game();
-// }
+Game *game;
 
 int main(int argc, char **argv) {
-    win = new Fl_Window(0,0,800,600,"FL");
-    gb = new GameBoard(100,100,800,400, 4);
+    // Create the FL Window
+    string title = "FL Sliding Puzzle";
+    win = new Fl_Window(100, 100, 800, 600, title.c_str());
+    win->position((Fl::w() - win->w())/2, (Fl::h() - win->h())/2);
+
+    // Start a new game
+    game = new Game(4);
+    gb = new GameBoard(100,100,800,400, game);
 
 
 
