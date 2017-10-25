@@ -19,6 +19,8 @@ Game::~Game() {}
 void Game::new_game() {
     board_.shuffle();
     steps_ = 0;
+    started_ = false;
+    pause_duration = milliseconds::zero();
 }
 
 void Game::pause() {
@@ -41,6 +43,7 @@ void Game::start() {
     start_time = now();
     started_ = true;
 }
+
 
 
 void Game::up() {

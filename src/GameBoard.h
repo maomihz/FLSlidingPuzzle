@@ -19,3 +19,14 @@ public:
     void draw();
     int handle(int event);
 };
+
+
+class InfoBoard : public Fl_Box {
+public:
+    Game* game;   // The game the board represents
+    InfoBoard(int x, int y, int w, int h, SPuzzle::Game* game)
+        : Fl_Box(x, y, w, h, NULL), game(game) {}
+
+    // Override the draw function and event handle function
+    void draw();
+};

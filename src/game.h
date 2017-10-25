@@ -6,6 +6,7 @@
 using std::chrono::system_clock;
 using std::chrono::milliseconds;
 using std::chrono::duration_cast;
+using std::chrono::duration;
 
 
 // Some common manipulation used for an actual sliding puzzle game
