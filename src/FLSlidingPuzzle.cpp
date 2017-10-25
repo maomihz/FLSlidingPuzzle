@@ -1,4 +1,5 @@
 #include "GameBoard.h"
+#include "InfoBoard.h"
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -10,8 +11,14 @@ using SPuzzle::Game;
 
 Fl_Window *win;
 GameBoard *gb;
+InfoBoard *ib;
 
 Game *game;
+
+void update_count(void*) {
+    ib->redraw();
+    Fl::add_timeout(0.1, update_count);
+}
 
 int main(int argc, char **argv) {
     // Create the FL Window
@@ -21,12 +28,13 @@ int main(int argc, char **argv) {
 
     // Start a new game
     game = new Game(4);
-    gb = new GameBoard(100,100,800,400, game);
+    gb = new GameBoard(100,100,400,400, game);
+    ib = new InfoBoard(600,200,100,300, game);
 
+    Fl::add_timeout(0.5, update_count);
 
 
     win->end();
     win->show(argc, argv);
-    while (Fl::check()) {
-    }
+    return Fl::run();
 }

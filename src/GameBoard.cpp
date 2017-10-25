@@ -28,31 +28,10 @@ void GameBoard::draw() {
             }
         }
     }
-
-    // Draw Other stuff
-    fl_font(fl_font(), 15);
-    fl_draw("Steps",
-        x() + 500, y() + 170,
-        100, 50, FL_ALIGN_INSIDE);
-    fl_draw(std::to_string(game->steps()).c_str(),
-        x() + 500, y() + 200,
-        100, 50, FL_ALIGN_INSIDE);
-    fl_draw("Time",
-        x() + 500, y() + 230,
-        100, 50, FL_ALIGN_INSIDE);
-    int duration = game->duration() / 1000;
-    std::stringstream ss;
-    ss << std::setw(2) << std::setfill('0') << duration / 60;
-    ss << ":";
-    ss << std::setw(2) << std::setfill('0') << duration % 60;
-    fl_draw(ss.str().c_str(),
-        x() + 500, y() + 260,
-        100, 50, FL_ALIGN_INSIDE);
 }
 
 // Handle the keyboard event
 int GameBoard::handle(int event) {
-    std::cout << event << std::endl;
     // The event only happens of it is a keyboard event,
     // the game is still going on.
     if (event == FL_KEYBOARD && !game->board().win()) {
@@ -77,6 +56,6 @@ int GameBoard::handle(int event) {
         if (game->board().win()) {
             fl_alert("You win!");
         }
-        return 0;
     }
+    return 1;
 }
