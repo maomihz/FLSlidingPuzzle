@@ -13,6 +13,8 @@ using SPuzzle::Game;
 Fl_Window *win;
 GameBoard *gb;
 InfoBoard *ib;
+Fl_PNG_Image* png = new Fl_PNG_Image("splash.png");
+Fl_PNG_Image* png2 = new Fl_PNG_Image("bbb.png");
 
 Game *game;
 
@@ -24,7 +26,7 @@ void update_count(void*) {
 
 void add_game(Fl_Widget* btn, void*) {
     game = new Game(4);
-    gb = new GameBoard(100,100,400,400, game);
+    gb = new GameBoard(100,100,400,400, game, png2);
     ib = new InfoBoard(600,200,100,300, game);
     win->clear();
     win->add(gb);
@@ -39,9 +41,7 @@ int main(int argc, char **argv) {
     string title = "FL Sliding Puzzle";
     win = new Fl_Window(100, 100, 800, 600, title.c_str());
     win->position((Fl::w() - win->w())/2, (Fl::h() - win->h())/2);
-
     Fl_Box* img = new Fl_Box(0,0,win->w(), win->h());
-    Fl_PNG_Image png("splash.png");
     img->image(png);
 
     Fl_Button* start = new Fl_Button(150,450,100,50,"New Game");

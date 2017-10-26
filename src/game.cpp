@@ -4,8 +4,8 @@ using namespace SPuzzle;
 
 // ====== Constructors & Destructors ======
 Game::Game(int size) :
-    board_(size),
-    solution_(size),
+    board_(size),    // A newly created board is in order unless shuffle() is
+    solution_(size), // explictly called
     steps_(0)
 {
     new_game();
@@ -19,7 +19,9 @@ Game::~Game() {}
 void Game::new_game() {
     board_.shuffle();
     steps_ = 0;
-    started_ = false;
+    started_ = false;    // When a new game is started, the started flag need
+                         // to be set to false because at this time the timer
+                         // should not run until the first move is made
     pause_duration = milliseconds::zero();
 }
 
@@ -39,6 +41,7 @@ void Game::resume() {
     }
 }
 
+// The start function just resets the timer
 void Game::start() {
     start_time = now();
     started_ = true;
@@ -69,13 +72,17 @@ void Game::right() {
 Board Game::board() { return board_; }
 Board Game::solution() { return solution_; }
 int Game::steps() const { return steps_; }
+bool Game::paused() const { return paused_; }
+bool Game::started() const { return started_; }
+// Return the duration of the game in milliseconds. The duration is not always
+// correct and should not be used when the game has ended or is paused.
 int Game::duration() const {
-    // If the game has not started then always return 0
+    // If the game has not started then always return 0. At this time the timer
+    // could be anything.
     if (!started_) {
         return 0;
     }
-    // Otherwise return the actual time
+    // Otherwise return the actual time. It is the difference of the starting
+    // time, not including total pause duration.
     return (now() - start_time - pause_duration).count();
 }
-bool Game::paused() const { return paused_; }
-bool Game::started() const { return started_; }
