@@ -11,10 +11,32 @@ using std::chrono::duration;
 
 // Some common manipulation used for an actual sliding puzzle game
 namespace SPuzzle {
+    // ===== Some constants ======
+    // Constants to represent moving direction
+    typedef int Direction;
+    const Direction UP = 0;
+    const Direction DOWN = 1;
+    const Direction LEFT = 2;
+    const Direction RIGHT = 3;
+
+    // A map for constant to point. These points can be added to a existing
+    // point to calculate the coordinate the point is moving to.
+    // The direction is actually reversed because if you are moving up
+    // then the space is moving down.
+    const Point DIRECTIONS[] = {
+        Point(0, 1),   // Up
+        Point(0, -1),    // Down
+        Point(1, 0),   // Left
+        Point(-1, 0)     // Right
+    };
+
+
     class Game {
     private:
         Board board_;          // The pointer to the game board
         Board solution_;       // The solution of the current game board
+        Point last_;           // The last point in the board
+        Point space_;          // The index of empty space
         int steps_;            // Number of moves
         bool paused_;
         bool started_;         // Whether the game has started or not
@@ -26,7 +48,7 @@ namespace SPuzzle {
         milliseconds pause_start;
         milliseconds pause_duration; // Total duration of the pause
 
-        milliseconds now() const {
+        milliseconds now() const {   // Return the current time in milliseconds
             return duration_cast<milliseconds>(system_clock::now().time_since_epoch());
         }
     public:
@@ -50,8 +72,26 @@ namespace SPuzzle {
         void left();
         void right();
 
+        bool can_move(Direction dir) const;     // Can move or not
+        bool move(Direction dir);               // Move in one direction
+
+        void reset();             // Reset board to initial location
+        void shuffle();           // Shuffle the board
+        int correct_count() const;// Count the number of tiles that is in the
+                                  // correct location. 0 <= n < len, not
+                                  // including the space tile.
+        bool win() const;         // Check if the board is in winning position.
+                                  // The initial position is always the winning
+                                  // postition.
+
+
+        bool solvable() const;    // Check if the board is solvable
+
         Board board();
         Board solution();
+        Point last() const {return last_;}
+        Point space() const {return space_;}
+
         int steps() const;
         int duration() const; // calculated duration of the game in milliseconds
         bool paused() const;

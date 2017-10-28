@@ -6,23 +6,7 @@
 #pragma once
 
 namespace SPuzzle {
-    // ===== Some constants ======
-    // Constants to represent moving direction
-    const int UP = 0;
-    const int DOWN = 1;
-    const int LEFT = 2;
-    const int RIGHT = 3;
 
-    // A map for constant to point. These points can be added to a existing
-    // point to calculate the coordinate the point is moving to.
-    // The direction is actually reversed because if you are moving up
-    // then the space is moving down.
-    const Point DIRECTIONS[] = {
-        Point(0, 1),   // Up
-        Point(0, -1),    // Down
-        Point(1, 0),   // Left
-        Point(-1, 0)     // Right
-    };
 
     // ====== the Board class used to represent a game board ======
     class Board {
@@ -34,8 +18,12 @@ namespace SPuzzle {
         // for easier access.
         int size_;      // The size of the board
         int len_;       // The length of the array, equals to size squared
-        Point last_;    // The last point in the board
-        Point space_;   // The index of empty space
+
+
+    public:
+        Board(int size = 4);              // Constructor, defaults to size 4
+        Board(Board &another);            // Copy constructor
+        ~Board();                         // Destructor
 
     	// The main storage uses a one-dimensional array, therefore
         // there is two different representation of the coordinates.
@@ -62,14 +50,10 @@ namespace SPuzzle {
                   int x2, int y2);       // Swap two location using x, y
         void swap(int repra, int reprb); // Swap two location using index
         void swap(Point a, Point b);     // Swap two location using points
+
         bool valid(int x, int y) const;  // Check if a point is valid with x,y
         bool valid(int repr) const;      // Check if a point is valid with index
         bool valid(Point p) const;       // Check if a point is valid witn Point
-
-    public:
-        Board(int size = 4);              // Constructor, defaults to size 4
-        Board(Board &another);            // Copy constructor
-        ~Board();                         // Destructor
 
         int& at(int x, int y) const;      // Content of a location using x,y
         int& at(int repr) const;          // Content of a location using index
@@ -79,26 +63,10 @@ namespace SPuzzle {
         std::string at_str(int repr) const;
         std::string at_str(Point p) const;
 
-        bool can_move(int dir) const;     // Can move or not
-        bool move(int dir);               // Move in one direction
-
-        void reset();             // Reset board to initial location
-        void shuffle();           // Shuffle the board
-        int correct_count() const;// Count the number of tiles that is in the
-                                  // correct location. 0 <= n < len, not
-                                  // including the space tile.
-        bool win() const;         // Check if the board is in winning position.
-                                  // The initial position is always the winning
-                                  // postition.
-
-
-        bool solvable() const;    // Check if the board is solvable
 
         // Several accesser functions
         int size() const {return size_;}
         int len() const {return len_;}
-        Point last() const {return last_;}
-        Point space() const {return space_;}
 
     };
 

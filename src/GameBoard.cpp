@@ -19,7 +19,7 @@ void GameBoard::draw() {
             // the missing corner. It converts the "0" that is used to represent
             // space to the length of the board, so that the last piece draws
             // correctly.
-            if (game->board().win() && num == 0) {
+            if (game->win() && num == 0) {
                 num = game->board().len();
             }
             // If the game is not in winning position, then it crops the image
@@ -42,7 +42,7 @@ int GameBoard::handle(int event) {
     if (event == FL_KEYBOARD) {
         // Prevent operation if the game is in winning position or
         // is paused
-        if (!game->board().win() && !game->paused()) {
+        if (!game->win() && !game->paused()) {
             // w/s/a/d are for gamers
             // h/j/k/l are for vimers
             // up/down/left/right are for noobs
@@ -62,7 +62,7 @@ int GameBoard::handle(int event) {
             }
             redraw();
             // After the movement, check if the game is winning
-            if (game->board().win()) {
+            if (game->win()) {
                 fl_alert("You win!");
             }
         }
