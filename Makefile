@@ -39,3 +39,6 @@ clean:
 
 run: $(TARGET)
 	@./$(TARGET)
+
+wc:
+	@sed -e 's|//.*$$||g' -e '/^[	 ]*$$/d' src/*.cpp src/*.h | wc -l
