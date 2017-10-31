@@ -7,6 +7,7 @@
 
 #pragma once
 using SPuzzle::Game;
+using SPuzzle::Point;
 
 
 // The GameBoard class is used to represent an actual game board. The internal
@@ -18,10 +19,17 @@ class GameBoard : public Fl_Box {
 public:
     Game* game;        // The game the board represents
     Fl_Image* image;   // The image that is displayed on screen
+    Point anim_start;
+    Point anim_end;
+    double anim_run;
+
     GameBoard(int x, int y, int w, int h, SPuzzle::Game* game, Fl_Image* image)
         : Fl_Box(x, y, w, h, NULL),  // We don't need label here
         game(game),
-        image(image) {}
+        image(image),
+        anim_start(0,0),
+        anim_end(0,0),
+        anim_run(-1) {}
 
     // Override the draw function and event handle function
     void draw();

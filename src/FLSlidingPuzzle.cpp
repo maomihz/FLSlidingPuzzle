@@ -21,6 +21,8 @@ InfoBoard *ib;
 
 Fl_PNG_Image* png = new Fl_PNG_Image("splash.png");
 Fl_PNG_Image* png2 = new Fl_PNG_Image("bbb.png");
+Fl_PNG_Image* powered_by = new Fl_PNG_Image("powered_by.png");
+Fl_PNG_Image* bg = new Fl_PNG_Image("bg.png");
 
 
 
@@ -74,6 +76,8 @@ int main(int argc, char **argv) {
 
     game_win = new Fl_Group(0,0,win->w(), win->h());
     game = new Game(4);
+    Fl_Box* bgimg = new Fl_Box(0,0,win->w(),win->h());
+    bgimg->image(bg);
     gb = new GameBoard(100,100,400,400, game, png2);
     ib = new InfoBoard(600,200,100,300, game);
     game_win->end();
@@ -81,8 +85,10 @@ int main(int argc, char **argv) {
 
 
     about_win = new Fl_Group(0,0,win->w(), win->h());
-    Fl_Box *about_box = new Fl_Box(100,100,100,100, "Copyright MaomiHz\nAll Rights Reserved");
-    Fl_Button *main_btn = new Fl_Button(300,300,100,50,"Go back");
+    Fl_Box *about_box = new Fl_Box(100,100,100,100, "Placeholder Test");
+    about_box->image(powered_by);
+    about_box->position((win->w() - about_box->w()) / 2, 200);
+    Fl_Button *main_btn = new Fl_Button(350,500,100,50,"Go back");
     main_btn->callback(show_main);
     about_win->end();
     about_win->hide();

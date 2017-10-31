@@ -24,22 +24,52 @@ void GameBoard::draw() {
             }
             // If the game is not in winning position, then it crops the image
             // and draw each part.
-            if (num != 0)
-                image->draw(
-                    x() + i * grid,   // X
-                    y() + j * grid,   // Y
-                    grid - 2,         // Width, gap is needed for visual effect
-                    grid - 2,         // Height
-                    (num - 1) % size * grid,  // Starting X of the image
-                    (num - 1) / size * grid); // Starting Y of the image
+            if (num != 0) {
+                // If there is an ongoing animation
+                if (anim_run >= 0 && (Point(i,j) == anim_end)) {
+                    image->draw(
+                        x() + i * grid - (anim_start.x - i) * grid * (1 - anim_run), // X
+                        y() + j * grid - (anim_start.y - j) * grid * (1 - anim_run), // Y
+                        grid - 2,         // Width, gap is needed for visual effect
+                        grid - 2,         // Height
+                        (num - 1) % size * grid,  // Starting X of the image
+                        (num - 1) / size * grid); // Starting Y of the image
+                } else {
+                    image->draw(
+                        x() + i * grid,   // X
+                        y() + j * grid,   // Y
+                        grid - 2,         // Width, gap is needed for visual effect
+                        grid - 2,         // Height
+                        (num - 1) % size * grid,  // Starting X of the image
+                        (num - 1) / size * grid); // Starting Y of the image
+                }
+            }
         }
     }
+}
+
+
+static void run_anim(void* gameboard) {
+    GameBoard* gb = (GameBoard*) gameboard;
+    if (gb->anim_run >= 1) {
+        gb->anim_run = -1;
+    } else {
+        gb->anim_run += 0.5;
+        if (gb->anim_run > 1) {
+            gb->anim_run = 1;
+        }
+        Fl::repeat_timeout(0.01, run_anim, gameboard);
+    }
+    gb->redraw();
 }
 
 // Handle the keyboard event
 int GameBoard::handle(int event) {
     // This part handles keyboard event
     if (event == FL_KEYBOARD) {
+        if (anim_run > 0) {
+            return 1;
+        }
         // Prevent operation if the game is in winning position or
         // is paused
         if (!game->win() && !game->paused()) {
@@ -47,17 +77,34 @@ int GameBoard::handle(int event) {
             // h/j/k/l are for vimers
             // up/down/left/right are for noobs
             switch(Fl::event_key()) {
+                using namespace SPuzzle;
                 case 'w': case 'k': case FL_Up:
+                    anim_start = game->space() + DIRECTIONS[DOWN];
+                    anim_end = game->space();
+                    anim_run = 0;
                     game->up();
+                    Fl::add_timeout(0.01, run_anim, this);
                     break;
                 case 's': case 'j': case FL_Down:
+                    anim_start = game->space() + DIRECTIONS[UP];
+                    anim_end = game->space();
+                    anim_run = 0;
                     game->down();
+                    Fl::add_timeout(0.01, run_anim, this);
                     break;
                 case 'a': case 'h': case FL_Left:
+                    anim_start = game->space() + DIRECTIONS[RIGHT];
+                    anim_end = game->space();
+                    anim_run = 0;
                     game->left();
+                    Fl::add_timeout(0.01, run_anim, this);
                     break;
                 case 'd': case 'l': case FL_Right:
+                    anim_start = game->space() + DIRECTIONS[LEFT];
+                    anim_end = game->space();
+                    anim_run = 0;
                     game->right();
+                    Fl::add_timeout(0.01, run_anim, this);
                     break;
             }
             redraw();
