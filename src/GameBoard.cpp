@@ -25,24 +25,19 @@ void GameBoard::draw() {
             // If the game is not in winning position, then it crops the image
             // and draw each part.
             if (num != 0) {
-                // If there is an ongoing animation
+                int xx = x() + i * grid;
+                int yy = y() + j * grid;
+                // If there is an ongoing animation, then do the calculation
                 if (anim_run >= 0 && (Point(i,j) == anim_end)) {
-                    image->draw(
-                        x() + i * grid - (anim_start.x - i) * grid * (1 - anim_run), // X
-                        y() + j * grid - (anim_start.y - j) * grid * (1 - anim_run), // Y
-                        grid - 2,         // Width, gap is needed for visual effect
-                        grid - 2,         // Height
-                        (num - 1) % size * grid,  // Starting X of the image
-                        (num - 1) / size * grid); // Starting Y of the image
-                } else {
-                    image->draw(
-                        x() + i * grid,   // X
-                        y() + j * grid,   // Y
-                        grid - 2,         // Width, gap is needed for visual effect
-                        grid - 2,         // Height
-                        (num - 1) % size * grid,  // Starting X of the image
-                        (num - 1) / size * grid); // Starting Y of the image
+                    xx -= (anim_start.x - i) * grid * (1 - anim_run);
+                    yy -= (anim_start.y - j) * grid * (1 - anim_run);
                 }
+                image->draw(
+                    xx, yy,
+                    grid - 2,         // Width, gap is needed for visual effect
+                    grid - 2,         // Height
+                    (num - 1) % size * grid,  // Starting X of the image
+                    (num - 1) / size * grid); // Starting Y of the image
             }
         }
     }

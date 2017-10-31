@@ -8,9 +8,7 @@ Game::Game(int size) :
     solution_(size), // explictly called
     last_(Point(size - 1, size - 1)),
     steps_(0)
-{
-    new_game();
-}
+{}
 
 Game::~Game() {}
 
@@ -24,6 +22,19 @@ void Game::new_game() {
     started_ = false;    // When a new game is started, the started flag need
                          // to be set to false because at this time the timer
                          // should not run until the first move is made
+    pause_duration = milliseconds::zero();
+}
+
+// Start a new game with custom data
+void Game::new_game(int* data) {
+    for (int i = 0; i < board_.len(); ++i) {
+        board_.at(i) = data[i];
+        if (data[i] == 0) {
+            space_ = board_.to_point(i);
+        }
+    }
+    steps_ = 0;
+    started_ = false;
     pause_duration = milliseconds::zero();
 }
 

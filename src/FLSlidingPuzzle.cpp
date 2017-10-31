@@ -1,6 +1,7 @@
 #include "GameBoard.h"
 #include "FL/Fl_Button.H"
 #include "FL/Fl_PNG_Image.H"
+#include "preset.h"
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -13,6 +14,7 @@ using SPuzzle::Game;
 Fl_Group* splash;
 Fl_Group* game_win;
 Fl_Group* about_win;
+Fl_Group* difficulty;
 
 Fl_Window *win;
 GameBoard *gb;
@@ -42,6 +44,13 @@ static void show_game(Fl_Widget* btn, void*) {
     Fl::add_timeout(0.5, update_count);
 }
 
+static void show_difficulty(Fl_Widget* btn, void*) {
+    for (int i = 0; i < win->children(); ++i) {
+        win->child(i)->hide();
+    }
+    difficulty->show();
+}
+
 void show_about(Fl_Widget* btn, void*) {
     for (int i = 0; i < win->children(); ++i) {
         win->child(i)->hide();
@@ -62,20 +71,36 @@ int main(int argc, char **argv) {
     win = new Fl_Window(100, 100, 800, 600, title.c_str());
     win->position((Fl::w() - win->w())/2, (Fl::h() - win->h())/2);
 
-    splash = new Fl_Group(0,0,win->w(), win->h());
-    Fl_Box* img = new Fl_Box(0,0,win->w(), win->h());
-    img->image(png);
-    Fl_Button* start = new Fl_Button(150,450,100,50,"New Game");
-    Fl_Button* help = new Fl_Button(350,450,100,50,"Help");
-    Fl_Button* about = new Fl_Button(550,450,100,50,"About");
-    start->callback(show_game);
+    splash            = new Fl_Group(0,0,win->w(), win->h());
+    Fl_Box* main_bg       = new Fl_Box(0,0,win->w(), win->h());
+    main_bg->image(png);
+    Fl_Button* start  = new Fl_Button(150,450,100,50,"New Game");
+    Fl_Button* help   = new Fl_Button(350,450,100,50,"Help");
+    Fl_Button* about  = new Fl_Button(550,450,100,50,"About");
+    start->callback(show_difficulty);
     about->callback(show_about);
     splash->end();
+
+
+    difficulty            = new Fl_Group(0,0,win->w(),win->h());
+    Fl_Box* difficulty_bg = new Fl_Box(0,0,win->w(), win->h());
+    difficulty_bg->image(png);
+    Fl_Button* easy       = new Fl_Button(150,450,100,50,"Easy");
+    Fl_Button* normal     = new Fl_Button(250,450,100,50,"Normal");
+    Fl_Button* hard       = new Fl_Button(350,450,100,50,"Hard");
+    Fl_Button* impossible = new Fl_Button(450,450,100,50,"Impossible");
+    Fl_Button* random     = new Fl_Button(550,450,100,50,"Random");
+    Fl_Button* back       = new Fl_Button(350,500,100,50,"Go Back");
+    random->callback(show_game);
+    back->callback(show_main);
+    difficulty->end();
+    difficulty->hide();
 
 
 
     game_win = new Fl_Group(0,0,win->w(), win->h());
     game = new Game(4);
+    game->new_game();
     Fl_Box* bgimg = new Fl_Box(0,0,win->w(),win->h());
     bgimg->image(bg);
     gb = new GameBoard(100,100,400,400, game, png2);
@@ -85,10 +110,11 @@ int main(int argc, char **argv) {
 
 
     about_win = new Fl_Group(0,0,win->w(), win->h());
-    Fl_Box *about_box = new Fl_Box(100,100,100,100, "Placeholder Test");
+    Fl_Box *about_box    = new Fl_Box(100,100,100,100, "Placeholder Test");
+    Fl_Button *main_btn  = new Fl_Button(350,500,100,50,"Go back");
+
     about_box->image(powered_by);
     about_box->position((win->w() - about_box->w()) / 2, 200);
-    Fl_Button *main_btn = new Fl_Button(350,500,100,50,"Go back");
     main_btn->callback(show_main);
     about_win->end();
     about_win->hide();

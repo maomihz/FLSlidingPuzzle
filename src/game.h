@@ -52,7 +52,7 @@ namespace SPuzzle {
             return duration_cast<milliseconds>(system_clock::now().time_since_epoch());
         }
     public:
-        Game(int size = 4);
+        Game(int size = 4);        // Constructs a default board
         ~Game();
 
         // When a new game is started, set the starting time to the current
@@ -60,6 +60,7 @@ namespace SPuzzle {
         // The pause function of this class is only used to count the
         // time, and it will not prevent the board from moving.
         void new_game();     // Start a new game
+        void new_game(int* data);
         void pause();        // Pause the game
         void resume();       // Resume the game
         void start();        // Start the game. The game automatically start
