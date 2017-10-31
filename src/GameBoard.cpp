@@ -7,6 +7,7 @@ void GameBoard::draw() {
     // each other.
     fl_color(FL_BACKGROUND_COLOR);
     fl_rectf(x(),y(),w(),h());
+    fl_line_style(FL_SOLID, 2);
 
     // Draw the numbers
     int size = game->board().size();  // The size of the game board
@@ -27,6 +28,7 @@ void GameBoard::draw() {
             if (num != 0) {
                 int xx = x() + i * grid;
                 int yy = y() + j * grid;
+
                 // If there is an ongoing animation, then do the calculation
                 if (anim_run >= 0 && (Point(i,j) == anim_end)) {
                     xx -= (anim_start.x - i) * grid * (1 - anim_run);
@@ -38,6 +40,14 @@ void GameBoard::draw() {
                     grid - 2,         // Height
                     (num - 1) % size * grid,  // Starting X of the image
                     (num - 1) / size * grid); // Starting Y of the image
+
+                // If the number is in correct location, draw green
+                // otherwise draw red
+                if (num == j * size + i + 1) {
+                    fl_rect(xx,yy,grid,grid,FL_GREEN);
+                } else {
+                    fl_rect(xx,yy,grid,grid,FL_RED);
+                }
             }
         }
     }
