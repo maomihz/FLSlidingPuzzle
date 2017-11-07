@@ -19,16 +19,22 @@ void InfoBoard::draw() {
     // Build the step
     std::stringstream ss_steps;
     if (game->steps_limit() > 0) {
-        fl_draw("Steps Remain", x(), y(), 100, 50, FL_ALIGN_INSIDE);
+        fl_draw("Steps Remain", x(), y(), 100, 25, FL_ALIGN_INSIDE);
         ss_steps << game->steps_remain();
     } else {
-        fl_draw("Steps", x(), y(), 100, 50, FL_ALIGN_INSIDE);
+        fl_draw("Steps", x(), y(), 100, 25, FL_ALIGN_INSIDE);
         ss_steps << game->steps();
     }
     fl_draw(ss_steps.str().c_str(),
-        x(), y() + 50,
-        100, 50, FL_ALIGN_INSIDE);
+        x(), y() + 25,
+        100, 25, FL_ALIGN_INSIDE);
 
+    fl_draw("Progress", x(), y() + 75, 100, 25, FL_ALIGN_INSIDE);
+    std::stringstream ss_progress;
+    ss_progress << game->correct_count();
+    ss_progress << "/";
+    ss_progress << game->board().len() - 1;
+    fl_draw(ss_progress.str().c_str(), x(), y() + 100, 100, 25, FL_ALIGN_INSIDE);
 
     // build the time
     int duration = game->duration();
@@ -36,9 +42,9 @@ void InfoBoard::draw() {
     ss_time << std::setw(2) << std::setfill('0') << duration / 60000;
     ss_time << ":";
     ss_time << std::setw(2) << std::setfill('0') << duration / 1000 % 60;
-    fl_draw("Time", x(), y() + 100,
-        100, 50, FL_ALIGN_INSIDE);
+    fl_draw("Time", x(), y() + 150,
+        100, 25, FL_ALIGN_INSIDE);
     fl_draw(ss_time.str().c_str(),
-        x(), y() + 150,
-        100, 50, FL_ALIGN_INSIDE);
+        x(), y() + 175,
+        100, 25, FL_ALIGN_INSIDE);
 }
