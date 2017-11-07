@@ -75,6 +75,7 @@ namespace SPuzzle {
 
         bool can_move(Direction dir) const;     // Can move or not
         bool move(Direction dir);               // Move in one direction
+        Point get_move(Direction dir) const;   // Get the point in the direction
 
         void reset();             // Reset board to initial location
         void shuffle();           // Shuffle the board

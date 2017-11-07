@@ -1,12 +1,14 @@
-#include "GameBoard.h"
-#include "FL/Fl_Button.H"
-#include "FL/Fl_PNG_Image.H"
-#include "preset.h"
+#include <FL/Fl_Button.H>
+#include <FL/Fl_PNG_Image.H>
+
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+
+#include "GameBoard.h"
+#include "preset.h"
 
 using namespace std;
 using SPuzzle::Game;
@@ -72,7 +74,7 @@ int main(int argc, char **argv) {
     win->position((Fl::w() - win->w())/2, (Fl::h() - win->h())/2);
 
     splash            = new Fl_Group(0,0,win->w(), win->h());
-    Fl_Box* main_bg       = new Fl_Box(0,0,win->w(), win->h());
+    Fl_Box* main_bg   = new Fl_Box(0,0,win->w(), win->h());
     main_bg->image(png);
     Fl_Button* start  = new Fl_Button(150,450,100,50,"New Game");
     Fl_Button* help   = new Fl_Button(350,450,100,50,"Help");

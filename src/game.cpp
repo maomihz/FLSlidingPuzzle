@@ -63,20 +63,16 @@ void Game::start() {
 
 
 void Game::up() {
-    if (move(UP)) ++steps_;
-    if (!started_) start();
+    move(UP);
 }
 void Game::down() {
-    if (move(DOWN)) ++steps_;
-    if (!started_) start();
+    move(DOWN);
 }
 void Game::left() {
-    if (move(LEFT)) ++steps_;
-    if (!started_) start();
+    move(LEFT);
 }
 void Game::right() {
-    if (move(RIGHT)) ++steps_;
-    if (!started_) start();
+    move(RIGHT);
 }
 
 
@@ -84,8 +80,7 @@ void Game::right() {
 // If the location which is going to swap with the empty space
 // is valid then the move is valid.
 bool Game::can_move(int dir) const {
-    Point next = space_ + DIRECTIONS[dir];
-    return board_.valid(next);
+    return board_.valid(get_move(dir));
 }
 
 
@@ -96,12 +91,23 @@ bool Game::move(int dir) {
     // Still check validity first
     if (!can_move(dir)) return false;
 
-    Point next = DIRECTIONS[dir] + space_;
+    // Calculate next move
+    Point next = get_move(dir);
     board_.swap(space_, next);
     space_ = next;
+
+    // Update game stas
+    ++steps_;
+    if (!started_) start();
+
     return true;
 }
 
+// Get the next move. Does not do anything, only returns the
+// next point.
+Point Game::get_move(Direction dir) const {
+    return DIRECTIONS[dir] + space_;
+}
 
 // Resets the board to the initial state.
 // The initial state is the winning state.

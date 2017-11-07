@@ -22,6 +22,8 @@ public:
     Point anim_start;
     Point anim_end;
     double anim_run;
+    Point hover;
+
 
     GameBoard(int x, int y, int w, int h, SPuzzle::Game* game, Fl_Image* image)
         : Fl_Box(x, y, w, h, NULL),  // We don't need label here
@@ -29,11 +31,14 @@ public:
         image(image),
         anim_start(0,0),
         anim_end(0,0),
-        anim_run(-1) {}
+        anim_run(-1),
+        hover{-1,-1} {}
 
     // Override the draw function and event handle function
     void draw();
     int handle(int event);
+    void move(SPuzzle::Direction dir);
+    void click(Point p);
 };
 
 

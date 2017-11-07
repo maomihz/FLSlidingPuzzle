@@ -48,6 +48,10 @@ void GameBoard::draw() {
                 } else {
                     fl_rect(xx,yy,grid,grid,FL_RED);
                 }
+
+                if (i == hover.x && j == hover.y) {
+                    fl_rect(xx + 3,yy + 3,grid - 6,grid - 6,FL_YELLOW);
+                }
             }
         }
     }
@@ -68,49 +72,64 @@ static void run_anim(void* gameboard) {
     gb->redraw();
 }
 
+void GameBoard::move(SPuzzle::Direction dir) {
+    anim_start = game->space() - SPuzzle::DIRECTIONS[dir];
+    anim_end = game->space();
+    anim_run = 0;
+    game->move(dir);
+    Fl::add_timeout(0.01, run_anim, this);
+}
+
+using namespace SPuzzle;
+void GameBoard::click(Point p) {
+    if (game->get_move(UP) == p) {
+        move(UP);
+    } else if (game->get_move(DOWN) == p) {
+        move(DOWN);
+    } else if (game->get_move(LEFT) == p) {
+        move(LEFT);
+    } else if (game->get_move(RIGHT) == p) {
+        move(RIGHT);
+    }
+}
+
 // Handle the keyboard event
 int GameBoard::handle(int event) {
     // This part handles keyboard event
-    if (event == FL_KEYBOARD) {
-        if (anim_run > 0) {
+    if (event == FL_KEYBOARD || event == FL_PUSH) {
+        if (anim_run >= 0) {
             return 1;
         }
         // Prevent operation if the game is in winning position or
         // is paused
+        using namespace SPuzzle;
         if (!game->win() && !game->paused()) {
-            // w/s/a/d are for gamers
-            // h/j/k/l are for vimers
-            // up/down/left/right are for noobs
-            switch(Fl::event_key()) {
-                using namespace SPuzzle;
-                case 'w': case 'k': case FL_Up:
-                    anim_start = game->space() + DIRECTIONS[DOWN];
-                    anim_end = game->space();
-                    anim_run = 0;
-                    game->up();
-                    Fl::add_timeout(0.01, run_anim, this);
-                    break;
-                case 's': case 'j': case FL_Down:
-                    anim_start = game->space() + DIRECTIONS[UP];
-                    anim_end = game->space();
-                    anim_run = 0;
-                    game->down();
-                    Fl::add_timeout(0.01, run_anim, this);
-                    break;
-                case 'a': case 'h': case FL_Left:
-                    anim_start = game->space() + DIRECTIONS[RIGHT];
-                    anim_end = game->space();
-                    anim_run = 0;
-                    game->left();
-                    Fl::add_timeout(0.01, run_anim, this);
-                    break;
-                case 'd': case 'l': case FL_Right:
-                    anim_start = game->space() + DIRECTIONS[LEFT];
-                    anim_end = game->space();
-                    anim_run = 0;
-                    game->right();
-                    Fl::add_timeout(0.01, run_anim, this);
-                    break;
+            // *** KEYBOARD EVENT ***
+            if (event == FL_KEYBOARD) {
+                // w/s/a/d are for gamers
+                // h/j/k/l are for vimers
+                // up/down/left/right are for noobs
+                switch(Fl::event_key()) {
+                    case 'w': case 'k': case FL_Up:
+                        move(UP);
+                        break;
+                    case 's': case 'j': case FL_Down:
+                        move(DOWN);
+                        break;
+                    case 'a': case 'h': case FL_Left:
+                        move(LEFT);
+                        break;
+                    case 'd': case 'l': case FL_Right:
+                        move(RIGHT);
+                        break;
+                }
+            // *** MOUSE EVENT ***
+            } else if (event == FL_PUSH) {
+                int grid = h() / game->board().size();
+                int x_ = Fl::event_x() - x();
+                int y_ = Fl::event_y() - y();
+                click(Point{x_ / grid, y_ / grid});
+                redraw();
             }
             redraw();
             // After the movement, check if the game is winning
@@ -122,6 +141,18 @@ int GameBoard::handle(int event) {
         if (Fl::event_key() == 'r') {
             game->new_game();
         }
+    }
+    // Update hover location
+    if (event == FL_MOVE) {
+        int grid = h() / game->board().size();
+        int x_ = Fl::event_x() - x();
+        int y_ = Fl::event_y() - y();
+        hover.x = x_ / grid;
+        hover.y = y_ / grid;
+        redraw();
+    } else if (event == FL_LEAVE) {
+        hover.x = -1;
+        redraw();
     }
 
     // Always return 1 to represent the event is received, although not
