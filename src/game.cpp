@@ -7,7 +7,10 @@ Game::Game(int size) :
     board_(size),    // A newly created board is in order unless shuffle() is
     solution_(size), // explictly called
     last_(Point(size - 1, size - 1)),
-    steps_(0)
+    steps_(0),
+    steps_limit_(-1),
+    paused_(false),
+    started_(false)
 {}
 
 Game::~Game() {}
@@ -26,15 +29,16 @@ void Game::new_game() {
 }
 
 // Start a new game with custom data
-void Game::new_game(int* data) {
+void Game::new_game(std::vector<int> data, int limit) {
     for (int i = 0; i < board_.len(); ++i) {
-        board_.at(i) = data[i];
-        if (data[i] == 0) {
+        board_.at(i) = data.at(i);
+        if (data.at(i) == 0) {
             space_ = board_.to_point(i);
         }
     }
     steps_ = 0;
     started_ = false;
+    steps_limit_ = limit;
     pause_duration = milliseconds::zero();
 }
 
@@ -168,6 +172,11 @@ bool Game::win() const {
     return true;
 }
 
+// Check whether the game is lost
+bool Game::lose() const {
+    return (steps_limit_ > 0 && steps_ >= steps_limit_);
+}
+
 
 // Check whether the game board is solvable
 // http://www.geeksforgeeks.org/check-instance-15-puzzle-solvable/
@@ -196,6 +205,11 @@ bool Game::solvable() const {
 Board Game::board() { return board_; }
 Board Game::solution() { return solution_; }
 int Game::steps() const { return steps_; }
+int Game::steps_remain() const {
+    if (steps_limit_ < 0) return -1;
+    else return steps_limit_ - steps_;
+}
+int Game::steps_limit() const {return steps_limit_; }
 bool Game::paused() const { return paused_; }
 bool Game::started() const { return started_; }
 // Return the duration of the game in milliseconds. The duration is not always

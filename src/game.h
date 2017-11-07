@@ -1,5 +1,6 @@
 #include "board.h"
 #include <chrono>
+#include <vector>
 
 #pragma once
 
@@ -38,6 +39,7 @@ namespace SPuzzle {
         Point last_;           // The last point in the board
         Point space_;          // The index of empty space
         int steps_;            // Number of moves
+        int steps_limit_;
         bool paused_;
         bool started_;         // Whether the game has started or not
 
@@ -60,7 +62,7 @@ namespace SPuzzle {
         // The pause function of this class is only used to count the
         // time, and it will not prevent the board from moving.
         void new_game();     // Start a new game
-        void new_game(int* data);
+        void new_game(std::vector<int> data, int step_limit=-1);
         void pause();        // Pause the game
         void resume();       // Resume the game
         void start();        // Start the game. The game automatically start
@@ -85,6 +87,8 @@ namespace SPuzzle {
         bool win() const;         // Check if the board is in winning position.
                                   // The initial position is always the winning
                                   // postition.
+        bool lose() const;        // Check if the game is losing. The game is
+                                  // lost if number of steps exceed step limit.
 
 
         bool solvable() const;    // Check if the board is solvable
@@ -95,6 +99,8 @@ namespace SPuzzle {
         Point space() const {return space_;}
 
         int steps() const;
+        int steps_remain() const;
+        int steps_limit() const;
         int duration() const; // calculated duration of the game in milliseconds
         bool paused() const;
         bool started() const;

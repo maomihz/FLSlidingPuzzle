@@ -38,9 +38,27 @@ static void update_count(void*) {
     Fl::repeat_timeout(0.05, update_count);
 }
 
-static void show_game(Fl_Widget* btn, void*) {
+static void show_game(Fl_Widget* btn, void* data) {
     for (int i = 0; i < win->children(); ++i) {
         win->child(i)->hide();
+    }
+    int mode = fl_intptr_t(data);
+    switch (mode) {
+    case 1:
+        game->new_game(EASY.at(rand() % EASY.size()), 10);
+        break;
+    case 2:
+        game->new_game(NORMAL.at(rand() % NORMAL.size()), 20);
+        break;
+    case 3:
+        game->new_game(HARD.at(rand() % HARD.size()), 40);
+        break;
+    case 4:
+        game->new_game(IMPOSSIBLE.at(rand() % IMPOSSIBLE.size()), 80);
+        break;
+    default:
+        game->new_game();
+        break;
     }
     game_win->show();
     Fl::add_timeout(0.5, update_count);
@@ -67,12 +85,18 @@ static void show_main(Fl_Widget* btn, void*) {
     splash->show();
 }
 
+
 int main(int argc, char **argv) {
+    // Seed random number generator
+    srand(time(NULL));
+
     // Create the FL Window
     string title = "FL Sliding Puzzle";
     win = new Fl_Window(100, 100, 800, 600, title.c_str());
     win->position((Fl::w() - win->w())/2, (Fl::h() - win->h())/2);
 
+
+    // *** Splash Screen ***
     splash            = new Fl_Group(0,0,win->w(), win->h());
     Fl_Box* main_bg   = new Fl_Box(0,0,win->w(), win->h());
     main_bg->image(png);
@@ -84,6 +108,7 @@ int main(int argc, char **argv) {
     splash->end();
 
 
+    // *** Difficulty Selection ***
     difficulty            = new Fl_Group(0,0,win->w(),win->h());
     Fl_Box* difficulty_bg = new Fl_Box(0,0,win->w(), win->h());
     difficulty_bg->image(png);
@@ -93,16 +118,19 @@ int main(int argc, char **argv) {
     Fl_Button* impossible = new Fl_Button(450,450,100,50,"Impossible");
     Fl_Button* random     = new Fl_Button(550,450,100,50,"Random");
     Fl_Button* back       = new Fl_Button(350,500,100,50,"Go Back");
-    random->callback(show_game);
+    easy->callback(show_game,       (void*)1);
+    normal->callback(show_game,     (void*)2);
+    hard->callback(show_game,       (void*)3);
+    impossible->callback(show_game, (void*)4);
+    random->callback(show_game,     (void*)0);
     back->callback(show_main);
     difficulty->end();
     difficulty->hide();
 
 
-
+    // *** Game ***
     game_win = new Fl_Group(0,0,win->w(), win->h());
     game = new Game(4);
-    game->new_game();
     Fl_Box* bgimg = new Fl_Box(0,0,win->w(),win->h());
     bgimg->image(bg);
     gb = new GameBoard(100,100,400,400, game, png2);
@@ -111,10 +139,10 @@ int main(int argc, char **argv) {
     game_win->hide();
 
 
+    // *** About ***
     about_win = new Fl_Group(0,0,win->w(), win->h());
     Fl_Box *about_box    = new Fl_Box(100,100,100,100, "Placeholder Test");
     Fl_Button *main_btn  = new Fl_Button(350,500,100,50,"Go back");
-
     about_box->image(powered_by);
     about_box->position((win->w() - about_box->w()) / 2, 200);
     main_btn->callback(show_main);

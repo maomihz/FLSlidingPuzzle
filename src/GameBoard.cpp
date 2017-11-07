@@ -103,7 +103,7 @@ int GameBoard::handle(int event) {
         // Prevent operation if the game is in winning position or
         // is paused
         using namespace SPuzzle;
-        if (!game->win() && !game->paused()) {
+        if (!game->win() && !game->lose() && !game->paused()) {
             // *** KEYBOARD EVENT ***
             if (event == FL_KEYBOARD) {
                 // w/s/a/d are for gamers
@@ -135,6 +135,8 @@ int GameBoard::handle(int event) {
             // After the movement, check if the game is winning
             if (game->win()) {
                 fl_alert("You win!");
+            } else if (game->lose()) {
+                fl_alert("You lost!");
             }
         }
         // Regardless of what, press r will restart the game
