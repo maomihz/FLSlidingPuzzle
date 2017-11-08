@@ -23,6 +23,7 @@ public:
     Point anim_end;
     double anim_run;
     Point hover;
+    Point hint;
 
 
     GameBoard(int x, int y, int w, int h, SPuzzle::Game* game, Fl_Image* image)
@@ -32,7 +33,8 @@ public:
         anim_start(0,0),
         anim_end(0,0),
         anim_run(-1),
-        hover{-1,-1} {}
+        hover{-1,-1},
+        hint{-1,-1} {}
 
     // Override the draw function and event handle function
     void draw();

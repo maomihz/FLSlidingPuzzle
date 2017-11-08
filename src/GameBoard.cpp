@@ -52,6 +52,9 @@ void GameBoard::draw() {
                 if (i == hover.x && j == hover.y) {
                     fl_rect(xx + 3,yy + 3,grid - 6,grid - 6,FL_YELLOW);
                 }
+                if (i == hint.x && j == hint.y) {
+                    fl_rect(xx + 3,yy + 3,grid - 6,grid - 6,FL_CYAN);
+                }
             }
         }
     }
@@ -155,6 +158,8 @@ int GameBoard::handle(int event) {
     } else if (event == FL_LEAVE) {
         hover.x = -1;
         redraw();
+    } else if (event == FL_UNFOCUS) {
+        take_focus();
     }
 
     // Always return 1 to represent the event is received, although not

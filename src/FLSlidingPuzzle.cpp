@@ -71,7 +71,7 @@ static void show_difficulty(Fl_Widget* btn, void*) {
     difficulty->show();
 }
 
-void show_about(Fl_Widget* btn, void*) {
+static void show_about(Fl_Widget* btn, void*) {
     for (int i = 0; i < win->children(); ++i) {
         win->child(i)->hide();
     }
@@ -85,6 +85,22 @@ static void show_main(Fl_Widget* btn, void*) {
     splash->show();
 }
 
+static void anim_hint(void* data) {
+    int d = fl_intptr_t(data);
+    if (d >= 0) {
+        if (d & 1) {
+            gb->hint = game->get_move(game->hint());
+        } else {
+            gb->hint.x = -1;
+        }
+        gb->redraw();
+        Fl::repeat_timeout(0.1, anim_hint, (void*)(d - 1));
+    }
+}
+
+static void get_hint(Fl_Widget* btn, void*) {
+    Fl::add_timeout(0.01, anim_hint, (void*)6);
+}
 
 int main(int argc, char **argv) {
     // Seed random number generator
@@ -135,6 +151,9 @@ int main(int argc, char **argv) {
     bgimg->image(bg);
     gb = new GameBoard(100,100,400,400, game, png2);
     ib = new InfoBoard(600,200,100,300, game);
+    Fl_Button* pause = new Fl_Button(550, 50, 100, 50, "Pause");
+    Fl_Button* hint =  new Fl_Button(650, 50, 100, 50, "Hint");
+    hint->callback(get_hint);
     game_win->end();
     game_win->hide();
 

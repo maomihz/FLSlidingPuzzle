@@ -200,6 +200,24 @@ bool Game::solvable() const {
     }
 }
 
+// Predict the next move by the Manhatten Distance function.
+Direction Game::hint() const {
+    int good = -1;
+    int bad = -1;
+
+    for (int i = 0; i < 4; ++i) {
+        Point next = get_move(i);
+        if (board_.valid(next)) {
+            Point target = board_.to_point(board_.at(next));
+            int distance = space_.dist(target) - next.dist(target);
+            if (distance <= -1) good = i;
+            else if (distance >= 1) bad = i;
+        }
+    }
+
+    return good != -1 ? good : bad;
+}
+
 
 // ====== Accessers =======
 Board Game::board() { return board_; }

@@ -22,6 +22,8 @@ namespace SPuzzle {
 
         bool operator==(const Point a) const;
         bool operator!=(const Point a) const;
+
+        int dist(const Point a) const;
     };
 };
 

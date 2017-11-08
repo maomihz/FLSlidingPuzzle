@@ -92,6 +92,7 @@ namespace SPuzzle {
 
 
         bool solvable() const;    // Check if the board is solvable
+        Direction hint() const;
 
         Board board();
         Board solution();

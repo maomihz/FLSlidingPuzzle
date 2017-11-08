@@ -63,6 +63,12 @@ bool Point::operator!=(const Point a) const {
 }
 
 
+// Manhatten Distance function
+int Point::dist(const Point a) const {
+    return abs(x - a.x) + abs(y - a.y);
+}
+
+
 std::ostream& operator<<(std::ostream& os, SPuzzle::Point p) {
     os << "(" << p.x << "," << p.y << ")";
     return os;
