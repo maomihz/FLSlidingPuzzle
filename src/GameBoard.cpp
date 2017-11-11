@@ -132,7 +132,6 @@ int GameBoard::handle(int event) {
                 int x_ = Fl::event_x() - x();
                 int y_ = Fl::event_y() - y();
                 click(Point{x_ / grid, y_ / grid});
-                redraw();
             }
             redraw();
             // After the movement, check if the game is winning
@@ -152,9 +151,15 @@ int GameBoard::handle(int event) {
         int grid = h() / game->board().size();
         int x_ = Fl::event_x() - x();
         int y_ = Fl::event_y() - y();
-        hover.x = x_ / grid;
-        hover.y = y_ / grid;
-        redraw();
+        int x_grid = x_ / grid;
+        int y_grid = y_ / grid;
+        // Try to prevent unnecessary redraw
+        bool need_redraw = hover.x != x_grid || hover.y != y_grid;
+        if (need_redraw) {
+            hover.x = x_ / grid;
+            hover.y = y_ / grid;
+            redraw();
+        }
     } else if (event == FL_LEAVE) {
         hover.x = -1;
         redraw();
