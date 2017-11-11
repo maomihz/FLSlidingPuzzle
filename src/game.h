@@ -92,15 +92,17 @@ namespace SPuzzle {
 
 
         bool solvable() const;    // Check if the board is solvable
-        Direction hint() const;
+        Direction hint() const;   // Calculate a hint direction based on
+                                  // Manhatten distance function
 
+        // These are all accessor functions
         Board board();
         Board solution();
         Point last() const {return last_;}
         Point space() const {return space_;}
 
         int steps() const;
-        int steps_remain() const;
+        int steps_remain() const; // Calculated step remain
         int steps_limit() const;
         int duration() const; // calculated duration of the game in milliseconds
         bool paused() const;
