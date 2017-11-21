@@ -202,14 +202,31 @@ bool Game::solvable() const {
 
 // Predict the next move by the Manhatten Distance function.
 Direction Game::hint() const {
+    // Since the difference caused by one move is either +1 or -1, then
+    // if the move is +1 it is a bad move, and if the move is -1 it is
+    // a good move.
+
+    // Initialize the good and bad to be the direction. Recall that the
+    // direction is an integer: 0 or 1 or 2 or 3
+    // -1 means no good or bad move. It is not possible that both good
+    // and bad move could not be found.
     int good = -1;
     int bad = -1;
 
+    // Iterate through 0 - 3, which is all possible directions
     for (int i = 0; i < 4; ++i) {
         Point next = get_move(i);
+        // Ignore invalid move
         if (board_.valid(next)) {
-            Point target = board_.to_point(board_.at(next));
+            // The target point is the number - 1, since the board starts
+            // with 1 instead of 0.
+            Point target = board_.to_point(board_.at(next) - 1);
+            // Calculate the distance difference
             int distance = space_.dist(target) - next.dist(target);
+
+            // Either -1 or 1. Since there is no order on which direction
+            // should have more priority, blindly overwrite the previous
+            // assignment.
             if (distance <= -1) good = i;
             else if (distance >= 1) bad = i;
         }
