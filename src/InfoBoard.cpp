@@ -1,4 +1,5 @@
 #include "GameBoard.h"
+#include "util.h"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -47,4 +48,22 @@ void InfoBoard::draw() {
     fl_draw(ss_time.str().c_str(),
         x(), y() + 175,
         100, 25, FL_ALIGN_INSIDE);
+
+    // Draw the high scores
+    fl_draw("LEADERBOARD", x() + 125, y(), 100, 25, FL_ALIGN_INSIDE);
+    int score = game->score();
+    string player = config->get("player.name");
+    vector<int> scores = config->get_v(game->description() + ".scores");
+    vector<string> players = config->get_v_str(game->description() + ".players");
+    // Magic insertion
+    magic_insert(score, player, scores, players);
+
+    for (string::size_type i = 0; i < scores.size(); ++i) {
+        fl_draw(players.at(i).c_str(),
+            x() + 125, y() + 50 * (i + 1),
+            75, 25, FL_ALIGN_INSIDE);
+        fl_draw(std::to_string(scores.at(i)).c_str(),
+            x() + 200, y() + 50 * (i + 1),
+            25, 25, FL_ALIGN_INSIDE);
+    }
 }

@@ -24,6 +24,7 @@ point.o: src/point.cpp src/point.h
 FLSlidingPuzzle.o: src/GameBoard.h
 GameBoard.o: src/GameBoard.cpp src/GameBoard.h
 InfoBoard.o: src/InfoBoard.cpp src/GameBoard.h
+util.o: src/util.cpp src/util.h
 test.o: tests/test.cpp
 
 src/GameBoard.h: src/game.h
@@ -31,11 +32,13 @@ src/board.h: src/point.h
 src/game.h: src/board.h
 src/point.h:
 
+test: test.o configparser.o
+
 # Linking
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
-test: test.o configparser.o
+%: %.o
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 # Compiling

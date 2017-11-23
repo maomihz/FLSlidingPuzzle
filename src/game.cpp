@@ -10,7 +10,8 @@ Game::Game(int size) :
     steps_(0),
     steps_limit_(-1),
     paused_(false),
-    started_(false)
+    started_(false),
+    description_("")
 {}
 
 Game::~Game() {}
@@ -18,18 +19,20 @@ Game::~Game() {}
 
 // ===== Function Implementations =====
 // Start a new game, shuffle the board and reset variables.
-void Game::new_game() {
+void Game::new_game(std::string description) {
     reset();
     shuffle();
     steps_ = 0;
+    steps_limit_ = -1;
     started_ = false;    // When a new game is started, the started flag need
                          // to be set to false because at this time the timer
                          // should not run until the first move is made
     pause_duration = milliseconds::zero();
+    description_ = description;
 }
 
 // Start a new game with custom data
-void Game::new_game(std::vector<int> data, int limit) {
+void Game::new_game(std::vector<int> data, int limit, std::string description) {
     for (int i = 0; i < board_.len(); ++i) {
         board_.at(i) = data.at(i);
         if (data.at(i) == 0) {
@@ -40,6 +43,7 @@ void Game::new_game(std::vector<int> data, int limit) {
     started_ = false;
     steps_limit_ = limit;
     pause_duration = milliseconds::zero();
+    description_ = description;
 }
 
 void Game::pause() {
@@ -235,6 +239,19 @@ Direction Game::hint() const {
     return good != -1 ? good : bad;
 }
 
+// Calculate the score of the game. The score is determined differently by the
+// game mode.
+int Game::score() const {
+    // If the game is puzzle mode, the score the score is the number of correct
+    // tiles times the step limit.
+    if (puzzle_mode()) {
+        return correct_count() * steps_limit();
+    }
+
+    // If the game is free mode, the score is 1000 - time elapsed - steps taken
+    int s = 1000 - duration() / 1000 - steps();
+    return s < 0 ? 0 : s;
+}
 
 // ====== Accessers =======
 Board Game::board() { return board_; }

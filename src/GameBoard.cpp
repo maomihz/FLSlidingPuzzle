@@ -100,6 +100,7 @@ void GameBoard::click(Point p) {
 int GameBoard::handle(int event) {
     // This part handles keyboard event
     if (event == FL_KEYBOARD || event == FL_PUSH) {
+        take_focus();
         if (anim_run >= 0) {
             return 1;
         }
@@ -133,13 +134,15 @@ int GameBoard::handle(int event) {
                 int y_ = Fl::event_y() - y();
                 click(Point{x_ / grid, y_ / grid});
             }
-            redraw();
             // After the movement, check if the game is winning
             if (game->win()) {
                 fl_alert("You win!");
+                do_callback();
             } else if (game->lose()) {
                 fl_alert("You lost!");
+                do_callback();
             }
+            redraw();
         }
         // Regardless of what, press r will restart the game
         if (Fl::event_key() == 'r') {
@@ -163,8 +166,6 @@ int GameBoard::handle(int event) {
     } else if (event == FL_LEAVE) {
         hover.x = -1;
         redraw();
-    } else if (event == FL_UNFOCUS) {
-        take_focus();
     }
 
     // Always return 1 to represent the event is received, although not

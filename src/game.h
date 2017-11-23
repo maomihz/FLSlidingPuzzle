@@ -50,6 +50,8 @@ namespace SPuzzle {
         bool paused_;
         bool started_;         // Whether the game has started or not
 
+        std::string description_; // The description of the game
+
         // The time the game lasts is the current time minus the starting
         // time, not including the total pause. After each pause ends,
         // the number of miliseconds are added to the total pause duration.
@@ -61,15 +63,15 @@ namespace SPuzzle {
             return duration_cast<milliseconds>(system_clock::now().time_since_epoch());
         }
     public:
-        Game(int size = 4);        // Constructs a default board
+        Game(int size = 4); // Constructs a default board
         ~Game();
 
         // When a new game is started, set the starting time to the current
         // time and reset everything else, shuffle the board.
         // The pause function of this class is only used to count the
         // time, and it will not prevent the board from moving.
-        void new_game();     // Start a new game
-        void new_game(std::vector<int> data, int step_limit=-1);
+        void new_game(std::string description = "");     // Start a new game
+        void new_game(std::vector<int> data, int step_limit=-1, std::string description = "");
         void pause();        // Pause the game
         void resume();       // Resume the game
         void start();        // Start the game. The game automatically start
@@ -101,12 +103,14 @@ namespace SPuzzle {
         bool solvable() const;    // Check if the board is solvable
         Direction hint() const;   // Calculate a hint direction based on
                                   // Manhatten distance function
+        int score() const;        // Calculate the score
 
         // These are all accessor functions
         Board board();
         Board solution();
         Point last() const {return last_;}
         Point space() const {return space_;}
+        std::string description() const { return description_; }
 
         int steps() const;
         int steps_remain() const; // Calculated step remain
@@ -114,7 +118,7 @@ namespace SPuzzle {
         int duration() const; // calculated duration of the game in milliseconds
         bool paused() const;
         bool started() const;
-        
+
         bool free_mode() const; // Check the game is free mode or not
         bool puzzle_mode() const; // Check the game is puzzle mode or not
     };

@@ -9,6 +9,7 @@
 
 #include "GameBoard.h"
 #include "preset.h"
+#include "util.h"
 
 using namespace std;
 using SPuzzle::Game;
@@ -30,7 +31,8 @@ Fl_PNG_Image* bg = new Fl_PNG_Image("bg.png");
 
 
 
-Game *game;
+Game* game;
+ConfigParser* config;
 
 
 static void update_count(void*) {
@@ -39,25 +41,31 @@ static void update_count(void*) {
 }
 
 static void show_game(Fl_Widget* btn, void* data) {
+    // Before showing the game, ask the user for name
+    const char* name = fl_input("What is your name?", "Player");
+    if (!name) return;
+    config->set("player.name", name, true);
     for (int i = 0; i < win->children(); ++i) {
         win->child(i)->hide();
     }
+
+    // If the user does not input a name then abort
     int mode = fl_intptr_t(data);
     switch (mode) {
     case 1:
-        game->new_game(EASY.at(rand() % EASY.size()), 10);
+        game->new_game(EASY.at(rand() % EASY.size()), 10, "easy");
         break;
     case 2:
-        game->new_game(NORMAL.at(rand() % NORMAL.size()), 20);
+        game->new_game(NORMAL.at(rand() % NORMAL.size()), 20, "normal");
         break;
     case 3:
-        game->new_game(HARD.at(rand() % HARD.size()), 40);
+        game->new_game(HARD.at(rand() % HARD.size()), 40, "hard");
         break;
     case 4:
-        game->new_game(IMPOSSIBLE.at(rand() % IMPOSSIBLE.size()), 80);
+        game->new_game(IMPOSSIBLE.at(rand() % IMPOSSIBLE.size()), 80, "impossible");
         break;
     default:
-        game->new_game();
+        game->new_game("random");
         break;
     }
     game_win->show();
@@ -85,6 +93,24 @@ static void show_main(Fl_Widget* btn, void*) {
     splash->show();
 }
 
+static void game_end(Fl_Widget* gboard, void*) {
+    Fl::remove_timeout(update_count);
+    int score = game->score();
+    string player = config->get("player.name");
+    vector<int> scores = config->get_v(game->description() + ".scores");
+    vector<string> players = config->get_v_str(game->description() + ".players");
+    magic_insert(score, player, scores, players);
+    config->set(game->description() + ".scores", scores);
+    config->set(game->description() + ".players", players);
+    config->write();
+    switch(fl_choice("Do you want to play another game?", "No", "Yes", 0)) {
+        case 0: // No
+            exit(0);
+        case 1: // Yes
+            show_difficulty(nullptr, nullptr);
+    }
+}
+
 static void anim_hint(void* data) {
     int d = fl_intptr_t(data);
     if (d >= 0) {
@@ -105,6 +131,32 @@ static void get_hint(Fl_Widget* btn, void*) {
 int main(int argc, char **argv) {
     // Seed random number generator
     srand(time(NULL));
+
+    // Initialize configurations
+    config = new ConfigParser("leaderboard.conf");
+    config->load();
+    vector<int> easy_scores(5,0),
+                normal_scores(5,0),
+                hard_scores(5,0),
+                impossible_scores(5,0),
+                random_scores(5,0);
+    vector<string> easy_players(5,""),
+                normal_players(5,""),
+                hard_players(5,""),
+                impossible_players(5,""),
+                random_players(5,"");
+
+    config->set("easy.scores", easy_scores, true);
+    config->set("normal.scores", normal_scores, true);
+    config->set("hard.scores", hard_scores, true);
+    config->set("impossible.scores", impossible_scores, true);
+    config->set("random.scores", random_scores, true);
+
+    config->set("easy.players", easy_players, true);
+    config->set("normal.players", normal_players, true);
+    config->set("hard.players", hard_players, true);
+    config->set("impossible.players", impossible_players, true);
+    config->set("random.players", random_players, true);
 
     // Create the FL Window
     string title = "FL Sliding Puzzle";
@@ -134,12 +186,12 @@ int main(int argc, char **argv) {
     Fl_Button* impossible = new Fl_Button(450,450,100,50,"Impossible");
     Fl_Button* random     = new Fl_Button(550,450,100,50,"Random");
     Fl_Button* back       = new Fl_Button(350,500,100,50,"Go Back");
-    easy->callback(show_game,       (void*)1);
-    normal->callback(show_game,     (void*)2);
-    hard->callback(show_game,       (void*)3);
+    easy      ->callback(show_game, (void*)1);
+    normal    ->callback(show_game, (void*)2);
+    hard      ->callback(show_game, (void*)3);
     impossible->callback(show_game, (void*)4);
-    random->callback(show_game,     (void*)0);
-    back->callback(show_main);
+    random    ->callback(show_game, (void*)0);
+    back      ->callback(show_main);
     difficulty->end();
     difficulty->hide();
 
@@ -150,7 +202,8 @@ int main(int argc, char **argv) {
     Fl_Box* bgimg = new Fl_Box(0,0,win->w(),win->h());
     bgimg->image(bg);
     gb = new GameBoard(100,100,400,400, game, png2);
-    ib = new InfoBoard(600,200,100,300, game);
+    ib = new InfoBoard(530,200,260,300, game, config);
+    gb->callback(game_end);
     Fl_Button* pause = new Fl_Button(550, 50, 100, 50, "Pause");
     Fl_Button* hint =  new Fl_Button(650, 50, 100, 50, "Hint");
     hint->callback(get_hint);

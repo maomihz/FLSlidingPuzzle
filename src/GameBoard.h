@@ -4,6 +4,7 @@
 #include <FL/fl_ask.H>
 
 #include "game.h"
+#include "configparser.h"
 
 #pragma once
 using SPuzzle::Game;
@@ -19,6 +20,7 @@ class GameBoard : public Fl_Box {
 public:
     Game* game;        // The game the board represents
     Fl_Image* image;   // The image that is displayed on screen
+
     Point anim_start;
     Point anim_end;
     double anim_run;
@@ -51,8 +53,11 @@ public:
 class InfoBoard : public Fl_Box {
 public:
     Game* game;   // The game the board represents
-    InfoBoard(int x, int y, int w, int h, SPuzzle::Game* game)
-        : Fl_Box(x, y, w, h, NULL), game(game) {}
+    ConfigParser* config; // The configuration, used to display high score
+    InfoBoard(int x, int y, int w, int h, SPuzzle::Game* game, ConfigParser* config)
+        : Fl_Box(x, y, w, h, NULL),
+        game(game),
+        config(config) {}
 
     // Override the draw function and event handle function
     void draw();
