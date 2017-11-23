@@ -247,6 +247,8 @@ int Game::steps_remain() const {
 int Game::steps_limit() const {return steps_limit_; }
 bool Game::paused() const { return paused_; }
 bool Game::started() const { return started_; }
+bool Game::free_mode() const { return steps_limit_ < 0; }
+bool Game::puzzle_mode() const { return steps_limit_ >= 0; }
 // Return the duration of the game in milliseconds. The duration is not always
 // correct and should not be used when the game has ended or is paused.
 int Game::duration() const {

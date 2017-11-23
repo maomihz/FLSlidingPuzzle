@@ -25,21 +25,28 @@ namespace SPuzzle {
     // The direction is actually reversed because if you are moving up
     // then the space is moving down.
     const Point DIRECTIONS[] = {
-        Point(0, 1),   // Up
+        Point(0, 1),     // Up
         Point(0, -1),    // Down
-        Point(1, 0),   // Left
+        Point(1, 0),     // Left
         Point(-1, 0)     // Right
     };
 
 
     class Game {
     private:
+        // Primary storage
         Board board_;          // The pointer to the game board
         Board solution_;       // The solution of the current game board
+
+        // Variables for easy access
         Point last_;           // The last point in the board
         Point space_;          // The index of empty space
         int steps_;            // Number of moves
-        int steps_limit_;
+        int steps_limit_;      // This is used to describe the game mode. On a
+                               // free mode the steps limit should be negative.
+                               // For a puzzle mode the steps limit should be
+                               // non-negative. Step limit 0 for a puzzle mode
+                               // means the game is over.
         bool paused_;
         bool started_;         // Whether the game has started or not
 
@@ -107,5 +114,8 @@ namespace SPuzzle {
         int duration() const; // calculated duration of the game in milliseconds
         bool paused() const;
         bool started() const;
+        
+        bool free_mode() const; // Check the game is free mode or not
+        bool puzzle_mode() const; // Check the game is puzzle mode or not
     };
 }
