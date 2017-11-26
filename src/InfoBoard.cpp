@@ -56,14 +56,24 @@ void InfoBoard::draw() {
     vector<int> scores = config->get_v(game->description() + ".scores");
     vector<string> players = config->get_v_str(game->description() + ".players");
     // Magic insertion
-    magic_insert(score, player, scores, players);
+    // magic_insert(score, player, scores, players);
 
     for (string::size_type i = 0; i < scores.size(); ++i) {
-        fl_draw(players.at(i).c_str(),
-            x() + 125, y() + 50 * (i + 1),
-            75, 25, FL_ALIGN_INSIDE);
-        fl_draw(std::to_string(scores.at(i)).c_str(),
-            x() + 200, y() + 50 * (i + 1),
-            25, 25, FL_ALIGN_INSIDE);
+        string p = players.at(i);
+        string s = std::to_string(scores.at(i));
+        if (!p.length()) p = "<Empty>";
+        fl_draw(p.c_str(),
+            x() + 115, y() + 40 * (i + 1),
+            75, 25, FL_ALIGN_LEFT);
+        fl_draw(s.c_str(),
+            x() + 210, y() + 40 * (i + 1),
+            25, 25, FL_ALIGN_RIGHT);
     }
+    fl_color(FL_RED);
+    fl_draw(player.c_str(),
+        x() + 115, y() + 40 * 6,
+        75, 25, FL_ALIGN_LEFT);
+    fl_draw(std::to_string(score).c_str(),
+        x() + 210, y() + 40 * 6,
+        25, 25, FL_ALIGN_RIGHT);
 }

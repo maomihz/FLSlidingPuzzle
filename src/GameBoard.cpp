@@ -135,17 +135,14 @@ int GameBoard::handle(int event) {
                 click(Point{x_ / grid, y_ / grid});
             }
             // After the movement, check if the game is winning
-            if (game->win()) {
-                fl_alert("You win!");
-                do_callback();
-            } else if (game->lose()) {
-                fl_alert("You lost!");
+            if (game->win() || game->lose()) {
                 do_callback();
             }
             redraw();
         }
         // Regardless of what, press r will restart the game
-        if (Fl::event_key() == 'r') {
+        // Disallow the action for now
+        if (Fl::event_key() == 'r' && false) {
             game->new_game();
         }
     }

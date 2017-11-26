@@ -42,8 +42,19 @@ static void update_count(void*) {
 
 static void show_game(Fl_Widget* btn, void* data) {
     // Before showing the game, ask the user for name
-    const char* name = fl_input("What is your name?", "Player");
-    if (!name) return;
+    // If the name is already set then read that otherwise
+    // set to default "Player"
+    string player_name;
+    try {
+        player_name = config->get("player.name");
+    } catch (out_of_range e) {
+        player_name = "Player";
+    }
+
+    // Show the input dialog
+    const char* name = fl_input("What is your name?", player_name.c_str());
+    if (!name) return;  // If the user clicked cancel, then fail
+    if (!strlen(name)) return; // If the user enter empty string then return
     config->set("player.name", name, true);
     for (int i = 0; i < win->children(); ++i) {
         win->child(i)->hide();
@@ -94,6 +105,7 @@ static void show_main(Fl_Widget* btn, void*) {
 }
 
 static void game_end(Fl_Widget* gboard, void*) {
+    ib->redraw();
     Fl::remove_timeout(update_count);
     int score = game->score();
     string player = config->get("player.name");
@@ -103,6 +115,13 @@ static void game_end(Fl_Widget* gboard, void*) {
     config->set(game->description() + ".scores", scores);
     config->set(game->description() + ".players", players);
     config->write();
+
+
+    if (game->win()) {
+        fl_alert("You Win!");
+    } else {
+        fl_alert("Game Over!");
+    }
     switch(fl_choice("Do you want to play another game?", "No", "Yes", 0)) {
         case 0: // No
             exit(0);
