@@ -43,17 +43,20 @@ void GameBoard::draw() {
 
                 // If the number is in correct location, draw green
                 // otherwise draw red
-                if (num == j * size + i + 1) {
-                    fl_rect(xx,yy,grid,grid,FL_GREEN);
-                } else {
-                    fl_rect(xx,yy,grid,grid,FL_RED);
-                }
+                if (!readonly_) {
 
-                if (i == hover.x && j == hover.y) {
-                    fl_rect(xx + 3,yy + 3,grid - 6,grid - 6,FL_YELLOW);
-                }
-                if (i == hint.x && j == hint.y) {
-                    fl_rect(xx + 3,yy + 3,grid - 6,grid - 6,FL_CYAN);
+                    if (num == j * size + i + 1) {
+                        fl_rect(xx,yy,grid,grid,FL_GREEN);
+                    } else {
+                        fl_rect(xx,yy,grid,grid,FL_RED);
+                    }
+
+                    if (i == hover.x && j == hover.y) {
+                        fl_rect(xx + 3,yy + 3,grid - 6,grid - 6,FL_YELLOW);
+                    }
+                    if (i == hint.x && j == hint.y) {
+                        fl_rect(xx + 3,yy + 3,grid - 6,grid - 6,FL_CYAN);
+                    }
                 }
             }
         }
@@ -99,6 +102,10 @@ void GameBoard::click(Point p) {
 // Handle the keyboard event
 int GameBoard::handle(int event) {
     // This part handles keyboard event
+    // If the board is "Read Only", then do not handle any events
+    if (readonly_) {
+        return 1;
+    }
     if (event == FL_KEYBOARD || event == FL_PUSH) {
         take_focus();
         if (anim_run >= 0) {

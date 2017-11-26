@@ -16,7 +16,7 @@ const vector<vector<int>> NORMAL = {
         1  , 6  , 3  , 4  ,
         5  , 0  , 2  , 11 ,
         9  , 10 , 14 , 7  ,
-        13 , 15 , 12 , 8 
+        13 , 15 , 12 , 8
     }
 };
 
@@ -36,4 +36,8 @@ const vector<vector<int>> IMPOSSIBLE = {
         3  , 7  , 6  , 2 ,
         4  , 8  , 5  , 1
     }
+};
+
+const vector<int> DEMO = {
+    1, 2, 7, 3, 5, 6, 4, 0, 9, 10, 11, 8, 13, 14, 15, 12
 };

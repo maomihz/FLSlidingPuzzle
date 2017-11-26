@@ -27,6 +27,8 @@ public:
     Point hover;
     Point hint;
 
+    bool readonly_;
+
 
     GameBoard(int x, int y, int w, int h, SPuzzle::Game* game, Fl_Image* image)
         : Fl_Box(x, y, w, h, NULL),  // We don't need label here
@@ -36,13 +38,17 @@ public:
         anim_end(0,0),
         anim_run(-1),
         hover{-1,-1},
-        hint{-1,-1} {}
+        hint{-1,-1},
+        readonly_(false) {}
 
     // Override the draw function and event handle function
     void draw();
     int handle(int event);
     void move(SPuzzle::Direction dir);
     void click(Point p);
+    void readonly(bool value = true) {
+        readonly_ = value;
+    }
 };
 
 
