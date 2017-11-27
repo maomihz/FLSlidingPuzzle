@@ -79,8 +79,7 @@ static void show_game(Fl_Widget* btn, void* data) {
     int mode = fl_intptr_t(data);
     switch (mode) {
     case 1:
-        // game->new_game(EASY.at(rand() % EASY.size()), 10, "easy");
-        game->new_game(DEMO, 10, "easy");
+        game->new_game(EASY.at(rand() % EASY.size()), 10, "easy");
         break;
     case 2:
         game->new_game(NORMAL.at(rand() % NORMAL.size()), 20, "normal");
