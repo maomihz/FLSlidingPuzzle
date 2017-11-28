@@ -20,11 +20,6 @@ void GameBoard::draw() {
     // else.
     if (game->paused()) {
         image->draw(x(), y());
-
-        // Big letters in the middle
-        fl_color(FL_BLACK);
-        fl_font(fl_font(), 50);
-        fl_draw("Paused", x(), y(), w(), h(), FL_ALIGN_CENTER);
         return;
     }
 

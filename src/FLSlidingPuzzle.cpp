@@ -205,13 +205,13 @@ int main(int argc, char **argv) {
     // *** Splash Screen ***
     splash            = new Fl_Group(0,0,win->w(), win->h());
     Fl_Box* main_bg   = new Fl_Box(0,0,win->w(), win->h());
-    main_bg->image(png);
+    main_bg->image(img_splash);
     Fl_Button* start  = new Fl_Button(150,450,100,50,"New Game");
     Fl_Button* help   = new Fl_Button(350,450,100,50,"Help");
     Fl_Button* about  = new Fl_Button(550,450,100,50,"About");
     demo_game = new Game(4);
     demo_game->new_game(DEMO, -1, "demo");
-    demo = new GameBoard(600,100,150,150, demo_game, small);
+    demo = new GameBoard(600,100,150,150, demo_game, img_demo);
     demo->readonly(true);
     Fl::add_timeout(1, anim_demo);
     start->callback(show_difficulty);
@@ -222,7 +222,7 @@ int main(int argc, char **argv) {
     // *** Difficulty Selection ***
     difficulty            = new Fl_Group(0,0,win->w(),win->h());
     Fl_Box* difficulty_bg = new Fl_Box(0,0,win->w(), win->h());
-    difficulty_bg->image(png);
+    difficulty_bg->image(img_difficulty);
     Fl_Button* easy       = new Fl_Button(150,450,100,50,"Easy");
     Fl_Button* normal     = new Fl_Button(250,450,100,50,"Normal");
     Fl_Button* hard       = new Fl_Button(350,450,100,50,"Hard");
@@ -244,8 +244,8 @@ int main(int argc, char **argv) {
     game = new Game(4);
     // Overall background image
     Fl_Box* bgimg = new Fl_Box(0,0,win->w(),win->h());
-    bgimg->image(bg);
-    gb = new GameBoard(100,100,400,400, game, png2);
+    bgimg->image(img_game_bg);
+    gb = new GameBoard(100,100,400,400, game, img_game);
     ib = new InfoBoard(530,200,260,300, game, config);
     gb->callback(game_end);
     pause = new Fl_Button(550, 50, 100, 50, "Quit");
@@ -260,6 +260,9 @@ int main(int argc, char **argv) {
     game_pause = new Fl_Group(0,0,win->w(), win->h());
     Fl_Button* back_main = new Fl_Button(600, 100, 100, 50, "Back to Main");
     back_main->callback(force_quit);
+    Fl_Box* pause_label = new Fl_Box(100, 0, 400, 50, "Game Paused");
+    pause_label->align(FL_ALIGN_CENTER);
+    pause_label->labelsize(40);
     game_pause->end();
     game_pause->hide();
 
@@ -267,9 +270,9 @@ int main(int argc, char **argv) {
 
     // *** About ***
     about_win = new Fl_Group(0,0,win->w(), win->h());
-    Fl_Box *about_box    = new Fl_Box(100,100,100,100, "Placeholder Test");
+    Fl_Box *about_box    = new Fl_Box(100,100,100,100, "");
     Fl_Button *main_btn  = new Fl_Button(350,500,100,50,"Go back");
-    about_box->image(powered_by);
+    about_box->image(img_powered_by);
     about_box->position((win->w() - about_box->w()) / 2, 200);
     main_btn->callback(show_main);
     about_win->end();

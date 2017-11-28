@@ -38,11 +38,12 @@ vector<Direction> demo_remain = demo_steps;
 
 
 
-Fl_PNG_Image* png = new Fl_PNG_Image("splash.png");
-Fl_PNG_Image* png2 = new Fl_PNG_Image("bbb.png");
-Fl_PNG_Image* small = new Fl_PNG_Image("small.png");
-Fl_PNG_Image* powered_by = new Fl_PNG_Image("powered_by.png");
-Fl_PNG_Image* bg = new Fl_PNG_Image("bg.png");
+Fl_PNG_Image* img_splash =     new Fl_PNG_Image("res/splash.png");
+Fl_PNG_Image* img_difficulty = new Fl_PNG_Image("res/difficulty.png");
+Fl_PNG_Image* img_demo =       new Fl_PNG_Image("res/demo.png");
+Fl_PNG_Image* img_game_bg =    new Fl_PNG_Image("res/game.png");
+Fl_PNG_Image* img_powered_by = new Fl_PNG_Image("res/powered_by.png");
+Fl_PNG_Image* img_game =       new Fl_PNG_Image("res/games/default.png");
 
 Fl_Button* pause;
 
