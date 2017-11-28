@@ -65,6 +65,9 @@ public:
 // steps, and the score. When created, the same pointer of a Game object as the
 // GameBoard must be passed in in order to access the data correctly.
 class InfoBoard : public Fl_Box {
+private:
+    vector<int> scores;
+    vector<string> players;
 public:
     Game* game;   // The game the board represents
     ConfigParser* config; // The global configuration,
@@ -76,4 +79,8 @@ public:
 
     // Override the draw function and event handle function
     void draw();
+
+    // This is used to update the leaderboard. It copies the vector from
+    // configuration. Called when a new game starts
+    void update();
 };

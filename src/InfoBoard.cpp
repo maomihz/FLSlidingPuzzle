@@ -56,8 +56,6 @@ void InfoBoard::draw() {
     fl_draw("LEADERBOARD", x() + 125, y(), 100, 25, FL_ALIGN_INSIDE);
     int score = game->score();
     string player = config->get("player.name");
-    vector<int> scores = config->get_v(game->description() + ".scores");
-    vector<string> players = config->get_v_str(game->description() + ".players");
     // Magic insertion
     // magic_insert(score, player, scores, players);
 
@@ -81,4 +79,9 @@ void InfoBoard::draw() {
     fl_draw(std::to_string(score).c_str(),
         x() + 210, y() + 40 * 6,
         25, 25, FL_ALIGN_RIGHT);
+}
+
+void InfoBoard::update() {
+    scores = config->get_v(game->description() + ".scores");
+    players = config->get_v_str(game->description() + ".players");
 }

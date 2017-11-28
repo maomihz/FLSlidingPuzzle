@@ -24,6 +24,7 @@ static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
 
     // Update the picture
     gb->image = img_games.at(selected_img_game).first;
+
     hideall();
 
     // If the user does not input a name then abort
@@ -48,6 +49,9 @@ static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
     pause->label("Quit");
     game_win->show();
     Fl::add_timeout(0.5, update_count);
+
+    // Refresh Leaderboard
+    ib->update();
 }
 
 static void show_difficulty(Fl_Widget* btn = nullptr, void* = nullptr) {
