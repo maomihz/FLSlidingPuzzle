@@ -6,38 +6,39 @@
 // ==================================
 //            Serializers
 // ==================================
+// Serialize a vector
+template<class T>
+ostream& operator<<(ostream& os, vector<T> v) {
+    for (T e : v) {
+        os << e << ",";
+    }
+    return os;
+}
+
+// convert any object to string
+template<class T>
+string to_string(T obj) {
+    ostringstream ss;
+    ss << obj;
+    return ss.str();
+}
+
 
 // Convert a vector to a string
 // {1,3,4,2,6,7} ==> "1,3,4,2,6,7,"
 string ConfigParser::to_str(vector<int> v) {
-    // Use a string stream
-    stringstream ss;
-
-    // Iterate through the vector
-    for (auto i = v.begin(); i != v.end();++i) {
-        ss << *i << ",";
-    }
-    return ss.str();
+    return to_string(v);
 }
 
 // Convert a string vector to a string
 string ConfigParser::to_str(vector<string> v) {
-    // Use a string stream
-    stringstream ss;
-
-    // Iterate through the vector
-    for (auto i = v.begin(); i != v.end();++i) {
-        ss << *i << ",";
-    }
-    return ss.str();
+    return to_string(v);
 }
 
 // Convert a int to a string
 // 54 ==> "54"
 string ConfigParser::to_str(int i) {
-    stringstream ss;
-    ss << i;
-    return ss.str();
+    return to_string(i);
 }
 
 
