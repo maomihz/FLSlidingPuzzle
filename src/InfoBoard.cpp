@@ -19,6 +19,8 @@ void InfoBoard::draw() {
 
     // Build the step
     std::stringstream ss_steps;
+    // Depending on whether the game is in "puzzle mode" or "free mode",
+    // it draws different text.
     if (game->steps_limit() > 0) {
         fl_draw("Steps Remain", x(), y(), 100, 25, FL_ALIGN_INSIDE);
         ss_steps << game->steps_remain();
@@ -30,6 +32,7 @@ void InfoBoard::draw() {
         x(), y() + 25,
         100, 25, FL_ALIGN_INSIDE);
 
+    // Show how many tiles are in the correct location
     fl_draw("Progress", x(), y() + 75, 100, 25, FL_ALIGN_INSIDE);
     std::stringstream ss_progress;
     ss_progress << game->correct_count();
@@ -37,7 +40,7 @@ void InfoBoard::draw() {
     ss_progress << game->board().len() - 1;
     fl_draw(ss_progress.str().c_str(), x(), y() + 100, 100, 25, FL_ALIGN_INSIDE);
 
-    // build the time
+    // build the game time
     int duration = game->duration();
     std::stringstream ss_time;
     ss_time << std::setw(2) << std::setfill('0') << duration / 60000;
@@ -69,6 +72,8 @@ void InfoBoard::draw() {
             x() + 210, y() + 40 * (i + 1),
             25, 25, FL_ALIGN_RIGHT);
     }
+
+    // On the bottom draw the player score in red.
     fl_color(FL_RED);
     fl_draw(player.c_str(),
         x() + 115, y() + 40 * 6,

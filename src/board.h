@@ -61,6 +61,8 @@ namespace SPuzzle {
         int& at(int repr) const;          // Content of a location using index
         int& at(Point p) const;           // Content of a location using Point
 
+        // Convient functions to convert number to string. Easier to use
+        // for a GUI. It is the same as the above integer version.
         std::string at_str(int x, int y) const;
         std::string at_str(int repr) const;
         std::string at_str(Point p) const;

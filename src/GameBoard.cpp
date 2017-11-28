@@ -7,16 +7,21 @@ void GameBoard::draw() {
     // each other.
     fl_color(FL_BACKGROUND_COLOR);
     fl_rectf(x(),y(),w(),h());
+
+    // Set the border style
     fl_line_style(FL_SOLID, 2);
 
-    // Draw the numbers
+    // Initialize some variables
     int size = game->board().size();  // The size of the game board
     int grid = h() / size;            // The width of each square. Assume
                                       // height to be less than width.
 
-    // Drawing if the game is paused
+    // Drawing the whole image (solution) if the game is paused, and do nothing
+    // else.
     if (game->paused()) {
         image->draw(x(), y());
+
+        // Big letters in the middle
         fl_color(FL_BLACK);
         fl_font(fl_font(), 50);
         fl_draw("Paused", x(), y(), w(), h(), FL_ALIGN_CENTER);
@@ -27,23 +32,18 @@ void GameBoard::draw() {
     // Drawing if the game is not paused
     for (int j = 0; j < size; ++j) {
         for (int i = 0; i < size; ++i) {
-            SPuzzle::Board board;
-            if (game->paused()) {
-                board = game->solution();
-            } else {
-                board = game->board();
-            }
-            int num = board.at(i,j);
+            int num = game->board().at(i,j);
             // If the game is in winning position, draw everything including
             // the missing corner. It converts the "0" that is used to represent
             // space to the length of the board, so that the last piece draws
             // correctly.
             if (game->win() && num == 0) {
-                num = board.len();
+                num = game->board().len();
             }
             // If the game is not in winning position, then it crops the image
-            // and draw each part.
+            // and draw each part. Ignore the space.
             if (num != 0) {
+                // Starting x, y for each square
                 int xx = x() + i * grid;
                 int yy = y() + j * grid;
 
@@ -52,6 +52,8 @@ void GameBoard::draw() {
                     xx -= (anim_start.x - i) * grid * (1 - anim_run);
                     yy -= (anim_start.y - j) * grid * (1 - anim_run);
                 }
+
+                // Draw the actual cropped image
                 image->draw(
                     xx, yy,
                     grid - 2,         // Width, gap is needed for visual effect
@@ -59,10 +61,13 @@ void GameBoard::draw() {
                     (num - 1) % size * grid,  // Starting X of the image
                     (num - 1) / size * grid); // Starting Y of the image
 
-                // If the number is in correct location, draw green
-                // otherwise draw red
+                // Draw borders.
+                // Green for  "correct",
+                // Red for    "incorrect",
+                // Yellow for "hover",
+                // Cyan for   "hint".
+                // A game in "Read Only" state does not need borders.
                 if (!readonly_) {
-
                     if (num == j * size + i + 1) {
                         fl_rect(xx,yy,grid,grid,FL_GREEN);
                     } else {
