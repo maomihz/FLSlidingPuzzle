@@ -167,11 +167,6 @@ int GameBoard::handle(int event) {
             if (game->win() || game->lose()) {
                 do_callback();
             }
-            // If the game changed from not started to started, then
-            // do the same callback.
-            else if (!started && game->started()) {
-                do_callback();
-            }
             redraw();
         }
         // Regardless of what, press r will restart the game

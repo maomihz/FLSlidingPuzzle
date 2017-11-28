@@ -56,7 +56,7 @@ void Game::new_game(std::vector<int> data, int limit, std::string description) {
 
 void Game::pause() {
     // Only take action if the game is not paused, and is started
-    if (!paused_ && started_) {
+    if (!paused_) {
         pause_start = now();
         paused_ = true;
     }
@@ -64,9 +64,12 @@ void Game::pause() {
 
 void Game::resume() {
     // Only take action if the game is paused
-    if (paused_ && started_) {
-        pause_duration += (now() - pause_start);
+    if (paused_) {
         paused_ = false;
+        // Only add time if the game is started
+        if (started_) {
+            pause_duration += (now() - pause_start);
+        }
     }
 }
 

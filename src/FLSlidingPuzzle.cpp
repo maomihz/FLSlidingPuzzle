@@ -9,7 +9,7 @@ static void update_count(void*) {
 
 // Start a new game and show the game window. Callback for the start button.
 // Takes a data to specify the type of the game, and in this program there
-// are 5 types, easy normal hard impossible and random.
+// are 5 types, easy, normal, hard, impossible and random.
 static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
     // Before showing the game, ask the user for name
     // If the name is already set then read that otherwise
@@ -54,9 +54,8 @@ static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
         break;
     }
 
-    // When a new game starts, the "Pause" button should not work, so it is
-    // changed to Quit, which exits to the main menu without confirmation.
-    pause->label("Quit");
+    // Reset the label
+    pause->label("Pause");
 
     // Show the game window
     game_win->show();
@@ -133,14 +132,6 @@ static void show_settings(Fl_Widget* btn = nullptr, void* = nullptr) {
 // Update some elements when (after) the game is started, and prompt the user
 // when the game is ended.
 static void game_end(Fl_Widget* gboard, void*) {
-    // Handle the start of the game.
-    // if neither win or lose, then the game is started.
-    if (!game->win() && !game->lose()) {
-        pause->label("Pause");
-        return;
-    }
-
-
     // Handle the end of the game
     // First stop updating the score (info) board
     ib->redraw();
@@ -205,25 +196,16 @@ static void get_hint(Fl_Widget* btn = nullptr, void* = nullptr) {
 
 // callback function to toggle the pause state of the game
 static void toggle_pause(Fl_Widget* btn = nullptr, void* = nullptr) {
-    // If the game is already started, then the button actually performs
-    // the "pause" function
-    if (game->started()) {
-        // If the game is paused, then resume the game
-        if (game->paused()) {
-            game->resume();
-            pause->label("Pause"); // Update the label
-            game_pause->hide();    // hide the pause menu
-        // Otherwise pause the game
-        } else {
-            game->pause();
-            pause->label("Resume");
-            game_pause->show();
-        }
-    // If the game is not yet started, then the button performs "Quit"
-    // function. The label of the button is updated elsewhere.
+    // If the game is paused, then resume the game
+    if (game->paused()) {
+        game->resume();
+        pause->label("Pause"); // Update the label
+        game_pause->hide();    // hide the pause menu
+    // Otherwise pause the game
     } else {
-        // Quit to the main menu (splash screen)
-        show_main();
+        game->pause();
+        pause->label("Resume");
+        game_pause->show();
     }
     // Redraw the game board to keep it updated. Make the game board take
     // focus so that it can receive keyboard inputs.
@@ -262,9 +244,10 @@ static void select_img(Fl_Widget* btn, void* v) {
 // Callback to prompt the user and exit to the main menu
 static void force_quit(Fl_Widget* btn, void*) {
     // Ask the question and let user choose yes or no.
-    switch(fl_choice("Do you want to give up and quit?", "No", "Yes", 0)) {
-        case 1: // Yes
-            show_main();
+    // If the game is not yet started then quit directly.
+    if (!game->started()
+        || fl_choice("Do you want to give up and quit?", "No", "Yes", 0)) {
+        show_main();
     }
 }
 
@@ -389,8 +372,10 @@ int main(int argc, char **argv) {
     gb = new GameBoard(100,100,400,400, game, img_games.at(selected_img_game).first);
     ib = new InfoBoard(530,200,260,300, game, config);
     gb->callback(game_end);
-    pause = new Fl_Button(550, 50, 100, 50, "Quit");
+    pause = new Fl_Button(550, 50, 100, 50, "Pause");
     pause->callback(toggle_pause);
+    Fl_Button* quit_to_main = new Fl_Button(600, 100, 100, 50, "Quit");
+    quit_to_main->callback(force_quit);
     Fl_Button* hint =  new Fl_Button(650, 50, 100, 50, "Hint");
     hint->callback(get_hint);
     game_win->end();
@@ -399,8 +384,6 @@ int main(int argc, char **argv) {
 
     // *** Game Pause ***
     game_pause = new Fl_Group(0,0,win->w(), win->h());
-    Fl_Button* back_main = new Fl_Button(600, 100, 100, 50, "Back to Main");
-    back_main->callback(force_quit);
     Fl_Box* pause_label = new Fl_Box(100, 0, 400, 50, "Game Paused");
     pause_label->align(FL_ALIGN_CENTER);
     pause_label->labelsize(40);
