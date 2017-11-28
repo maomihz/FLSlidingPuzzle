@@ -1,10 +1,15 @@
 #include "FLSlidingPuzzle.h"
 
+// Update the info board, which is used to display time, steps and leaderboard.
+// Callback for a timeout
 static void update_count(void*) {
     ib->redraw();
     Fl::repeat_timeout(0.05, update_count);
 }
 
+// Start a new game and show the game window. Callback for the start button.
+// Takes a data to specify the type of the game, and in this program there
+// are 5 types, easy normal hard impossible and random.
 static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
     // Before showing the game, ask the user for name
     // If the name is already set then read that otherwise
@@ -20,104 +25,146 @@ static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
     const char* name = fl_input("What is your name?", player_name.c_str());
     if (!name) return;  // If the user clicked cancel, then fail
     if (!strlen(name)) return; // If the user enter empty string then return
-    config->set("player.name", name, true);
+    config->set("player.name", name, true); // Set the configuration item
 
-    // Update the picture
+    // Update the picture according to configuration
     gb->image = img_games.at(selected_img_game).first;
 
     hideall();
 
-    // If the user does not input a name then abort
+    // There are two different game modes, the puzzle mode which limits the
+    // amount of steps, and the free mode which is generated randomly.
+    // They have different scoring system.
     int mode = fl_intptr_t(data);
     switch (mode) {
-    case 1:
+    case 1: // Integer 1 represents "Easy"
         game->new_game(EASY.at(rand() % EASY.size()), 10, "easy");
         break;
-    case 2:
+    case 2: // Integer 2 represents "Normal"
         game->new_game(NORMAL.at(rand() % NORMAL.size()), 20, "normal");
         break;
-    case 3:
+    case 3: // Integer 3 represents "Hard"
         game->new_game(HARD.at(rand() % HARD.size()), 40, "hard");
         break;
-    case 4:
+    case 4: // Integer 4 represents "Impossible"
         game->new_game(IMPOSSIBLE.at(rand() % IMPOSSIBLE.size()), 80, "impossible");
         break;
-    default:
+    default: // Integer 0 (usually) represents "Random"
         game->new_game("random");
         break;
     }
+
+    // When a new game starts, the "Pause" button should not work, so it is
+    // changed to Quit, which exits to the main menu without confirmation.
     pause->label("Quit");
+
+    // Show the game window
     game_win->show();
+
+    // Set a timeout to update the info board
     Fl::add_timeout(0.5, update_count);
 
-    // Refresh Leaderboard
+    // Refresh Leaderboard, take in newly inserted score
     ib->update();
 }
 
+// Show the difficulty selection screen. Very simple callback, just hides
+// all other elements and show the difficulty group.
 static void show_difficulty(Fl_Widget* btn = nullptr, void* = nullptr) {
     hideall();
     difficulty->show();
 }
 
+// Show the about screen. Simple callback.
 static void show_about(Fl_Widget* btn = nullptr, void* = nullptr) {
     hideall();
     about_win->show();
 }
 
 
+// Callback to control the demo animation on the splash screen.
 static void anim_demo(void* data) {
+    // If the demo game is not completed yet, try to take a pre-defined
+    // move.
     if (demo_remain.size() > 0) {
         demo->move(demo_remain.front());
         demo_remain.erase(demo_remain.begin());
+    // If the demo game is already completed, then reset the game to original
+    // layout, and start the demo again.
     } else {
+        // Reset the game and reset the pre-defined steps
         demo_game->new_game(DEMO, -1, "demo");
         demo_remain = demo_steps;
+
+        // Redraw the demo board since the data is changed but the the GUI is
+        // not notified
         demo->redraw();
     }
+    // After the movement is made, if the game is still not completed, then
+    // wait for 1 second and take the next move.
     if (demo_remain.size() > 0) {
         Fl::repeat_timeout(1, anim_demo);
+    // Otherwise wait for 3 seconds before the game get resetted
     } else {
         Fl::repeat_timeout(3, anim_demo);
     }
 
 }
 
+// Show the splash screen. Simple callback.
 static void show_main(Fl_Widget* btn = nullptr, void* = nullptr) {
     hideall();
+
+    // Reset the demo game no matter what. Wait for 1 second and take a move
     demo_game->new_game(DEMO, -1, "demo");
     demo_remain = demo_steps;
     Fl::add_timeout(1, anim_demo);
+
     splash->show();
 }
 
+// Show the setting screen. Simple callback.
 static void show_settings(Fl_Widget* btn = nullptr, void* = nullptr) {
     hideall();
     settings_win->show();
 }
 
+// Callback for both the end of the game and the start of the game.
+// Update some elements when (after) the game is started, and prompt the user
+// when the game is ended.
 static void game_end(Fl_Widget* gboard, void*) {
+    // Handle the start of the game.
     // if neither win or lose, then the game is started.
     if (!game->win() && !game->lose()) {
         pause->label("Pause");
         return;
     }
+
+
+    // Handle the end of the game
+    // First stop updating the score (info) board
     ib->redraw();
     Fl::remove_timeout(update_count);
+
+    // Insert the current score to the list of scores, and write back to the
+    // file
     int score = game->score();
     string player = config->get("player.name");
     vector<int> scores = config->get_v(game->description() + ".scores");
     vector<string> players = config->get_v_str(game->description() + ".players");
-    magic_insert(score, player, scores, players);
+    magic_insert(score, player, scores, players); // Insert the score
     config->set(game->description() + ".scores", scores);
     config->set(game->description() + ".players", players);
     config->write();
 
-
+    // Display a dialog to indicate win or lose
     if (game->win()) {
-        fl_alert("You Win!");
+        fl_alert("You Win! Your score is %d.", score);
     } else {
-        fl_alert("Game Over!");
+        fl_alert("Game Over! Your score is %d.", score);
     }
+
+    // Ask the user whether start another game or quit
     switch(fl_choice("Do you want to play another game?", "No", "Yes", 0)) {
         case 0: // No
             exit(0);
@@ -126,45 +173,71 @@ static void game_end(Fl_Widget* gboard, void*) {
     }
 }
 
+
+// Show the hint "blinking" animation. The integer data indicates number of
+// blinks remain.
 static void anim_hint(void* data) {
     int d = fl_intptr_t(data);
     if (d >= 0) {
+        // If the number of blinks is odd, then show the boarder
         if (d & 1) {
             gb->hint = game->get_move(game->hint());
+        // Otherwise hide the boarder
         } else {
+            // Make the hint point invalid to hide
             gb->hint.x = -1;
         }
+
+        // Redraw the game board
         gb->redraw();
         Fl::repeat_timeout(0.1, anim_hint, (void*)(intptr_t)(d - 1));
     }
 }
 
-static void get_hint(Fl_Widget* btn, void*) {
+
+// Callback function to start the blinking hint
+static void get_hint(Fl_Widget* btn = nullptr, void* = nullptr) {
     Fl::add_timeout(0.01, anim_hint, (void*)6);
 }
 
+
+// callback function to toggle the pause state of the game
 static void toggle_pause(Fl_Widget* btn = nullptr, void* = nullptr) {
-    // cout << game->paused() << endl;
+    // If the game is already started, then the button actually performs
+    // the "pause" function
     if (game->started()) {
+        // If the game is paused, then resume the game
         if (game->paused()) {
             game->resume();
-            pause->label("Pause");
-            game_pause->hide();
+            pause->label("Pause"); // Update the label
+            game_pause->hide();    // hide the pause menu
+        // Otherwise pause the game
         } else {
             game->pause();
             pause->label("Resume");
             game_pause->show();
         }
+    // If the game is not yet started, then the button performs "Quit"
+    // function. The label of the button is updated elsewhere.
     } else {
+        // Quit to the main menu (splash screen)
         show_main();
     }
+    // Redraw the game board to keep it updated. Make the game board take
+    // focus so that it can receive keyboard inputs.
     gb->redraw();
     gb->take_focus();
 }
 
+// Callback function for the settings screen to switch selected images.
+// the integer argument is either +1 or -1, indicating select the next
+// image or previous image.
+// the "selected image" is used for the gameplay.
 static void select_img(Fl_Widget* btn, void* v) {
     int which = fl_intptr_t(v);
     selected_img_game += which;
+
+    // Prevent the index exceed boundary
     if (selected_img_game < 0) {
         selected_img_game = 0;
     } else if (selected_img_game >= (int)img_games.size()) {
@@ -178,37 +251,47 @@ static void select_img(Fl_Widget* btn, void* v) {
     // Update the configuration
     config->set("selected_img", selected_img_game);
     config->write();
+
+    // Redraw all the windows to update the display
     Fl::redraw();
 
 }
 
+// Callback to prompt the user and exit to the main menu
 static void force_quit(Fl_Widget* btn, void*) {
+    // Ask the question and let user choose yes or no.
     switch(fl_choice("Do you want to give up and quit?", "No", "Yes", 0)) {
-        case 1:
+        case 1: // Yes
             show_main();
     }
 }
 
+// Callback function to exit the program.
 static void cb_exit(Fl_Widget* btn, void*) {
     exit(0);
 }
 
+// Hide all elements in the window.
 static void hideall() {
     for (int i = 0; i < win->children(); ++i) {
         win->child(i)->hide();
     }
+    // Also remove the demo animation in the splash screen
     Fl::remove_timeout(anim_demo);
 }
 
-int main(int argc, char **argv) {
-    // Seed random number generator
-    srand(time(NULL));
 
-    // Initialize configurations
+// function to initialize the configuration file. The load argument indicates
+// whether to load the config from file. Set it to false resets the
+// configuration file.
+static void init_config(bool load = true) {
+    delete config;
     config = new ConfigParser("leaderboard.conf");
-    config->load();
+    if (load) {
+        config->load();
+    }
 
-    // Initialize default configurations
+    // Set the default configuration values
     vector<int> easy_scores(5,0),
                 normal_scores(5,0),
                 hard_scores(5,0),
@@ -235,6 +318,18 @@ int main(int argc, char **argv) {
     config->set("selected_img", 0, true);
 
     selected_img_game = config->get_int("selected_img");
+}
+
+
+// ***** ------------------- *****
+// **     The Main Function     **
+// ***** ------------------- *****
+int main(int argc, char **argv) {
+    // Seed random number generator
+    srand(time(nullptr));
+
+    // Initialize configuration file
+    init_config();
 
     // Create the FL Window
     string title = "FL Sliding Puzzle";
