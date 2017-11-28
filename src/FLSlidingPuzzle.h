@@ -1,11 +1,13 @@
 #include <FL/Fl_Button.H>
 #include <FL/Fl_PNG_Image.H>
+#include <FL/Fl_JPEG_Image.H>
 
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <vector>
 #include <cstdlib>
+#include <utility>
 
 #include "GameBoard.h"
 #include "preset.h"
@@ -20,6 +22,7 @@ Fl_Group* game_win;
 Fl_Group* game_pause;
 Fl_Group* about_win;
 Fl_Group* difficulty;
+Fl_Group* settings_win;
 
 Fl_Window *win;
 GameBoard *gb;
@@ -43,12 +46,22 @@ Fl_PNG_Image* img_difficulty = new Fl_PNG_Image("res/difficulty.png");
 Fl_PNG_Image* img_demo =       new Fl_PNG_Image("res/demo.png");
 Fl_PNG_Image* img_game_bg =    new Fl_PNG_Image("res/game.png");
 Fl_PNG_Image* img_powered_by = new Fl_PNG_Image("res/powered_by.png");
-Fl_PNG_Image* img_game =       new Fl_PNG_Image("res/games/default.png");
+Fl_PNG_Image* img_settings =   new Fl_PNG_Image("res/settings_bg.png");
+vector<pair<Fl_Image*, string>> img_games = {
+    pair<Fl_JPEG_Image*, string>(new Fl_JPEG_Image("res/games/default.jpg"), "Numbers"),
+    pair<Fl_JPEG_Image*, string>(new Fl_JPEG_Image("res/games/puppy.jpg"), "Puppy"),
+    pair<Fl_JPEG_Image*, string>(new Fl_JPEG_Image("res/games/deemo.jpg"), "Alice"),
+    pair<Fl_JPEG_Image*, string>(new Fl_JPEG_Image("res/games/miku.jpg"), "Hatsume Miku")
+};
 
 Fl_Button* pause;
 
 Game* game;
 Game* demo_game;
+
+int selected_img_game = 0;
+Fl_Box *selection_box;
+
 ConfigParser* config;
 
 static void hideall();
