@@ -22,16 +22,17 @@ int main() {
     parser.set("test3", v, true);
     parser.set("test4", vstr, true);
 
-    cout << "test1: " << parser.get_int("test1") << endl;
-    cout << "test2: " << parser.get("test2") << endl;
+    cout << "test1: " << parser.get<int>("test1") << endl;
+    cout << "test2: " << parser.get<string>("test2") << endl;
 
-    vector<int> conf_v = parser.get_v("test3");
+    vector<int> conf_v = parser.get<vector<int>>("test3");
     cout << "test3: ";
     for (int i : conf_v)
         cout << i << " ";
+    cout << conf_v.size();
     cout << endl;
 
-    vector<string> conf_vstr = parser.get_v_str("test4");
+    vector<string> conf_vstr = parser.get<vector<string>>("test4");
     cout << "test4: ";
     for (string i : conf_vstr)
         cout << i << " ";
@@ -48,4 +49,28 @@ int main() {
     parser.set("test3", v);
     parser.set("test4", vstr);
     parser.write();
+
+
+    // We are going to test some edge cases
+    cout << "\n===Edge Cases===\n";
+    parser.set("edge1", "Cat=Dog");
+    parser.set("edge=2", "Cat!=Dog");
+    parser.write();
+    parser.load();
+
+
+    cout << "Value contains \"=\": " << endl;
+    cout << "edge1: ";
+    cout << parser.get<string>("edge1") << endl;
+
+    cout << "Key contains \"=\": " << endl;
+    cout << "edge=2: ";
+    cout << parser.get<string>("edge=2") << endl;
+    try {
+        cout << "edge: ";
+        cout << parser.get<string>("edge") << endl;
+    } catch (out_of_range e) {
+        cout << "Not Exist." << endl;
+    }
+
 }

@@ -2,6 +2,8 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <iostream>
+#include <sstream>
 
 #pragma once
 
@@ -19,7 +21,7 @@ using namespace std;
 // The format of the configuration file looks like this:
 // key1=my_value
 // key2=14
-// key3=[1,2,3,4,5]
+// key3=1,2,3,4,5,
 //
 // The configurations are not ordered. Default configuration is a mask on top
 // of the configuration, and it is not written to the disk. Every time the
@@ -30,16 +32,6 @@ private:
     unordered_map<string, string> default_config;
     unordered_map<string, string> config;
     string file;   // The configuration file to read and write
-
-    // Serializer
-    string to_str(vector<int> v);  // Serialize an integer vector to a string
-    string to_str(vector<string> v); // Serialize an string vector to a string
-    string to_str(int i);          // Serialize an integer to a string
-
-    // Parser
-    vector<int> to_v(string s);    // Parse a vector string to a vector
-    vector<string> to_v_str(string s); // Parse a vector of string
-    int to_i(string s);            // Parse an integer string to an integer
 
 public:
     // Constructor
@@ -53,18 +45,88 @@ public:
     // Get a configuration item
     // It first checks if the key exist in the ordinary config. If not, then
     // it checks the default config.
-    string get(string key);         // Get a configuration
-    int get_int(string key);        // Get a conf and convert to int
-    vector<string> get_v_str(string key);// Get a conf and convert to vector<string>
-    vector<int> get_v(string key);  // Get a conf and convert to vector<int>
 
-    // Set a configuration item
-    void set(string key, string value, bool default_conf=false);
-    void set(string key, int value, bool default_conf=false);
-    void set(string key, vector<string> value, bool default_conf=false);
-    void set(string key, vector<int> value, bool default_conf=false);
+    template<class T>
+    T get(string key);  // Get a configuration
+    template<class T>   // Set a configuration item
+    void set(string key, T value, bool default_conf=false);
 
     // Change the file to read or write
     void set_file(string fname);
-
 };
+
+// Serializer & Parser
+template<class T> string to_string(T);
+template<class T> T from_string(string s);
+
+// **** Private Helper Functions ****
+// ==================================
+//            Serializers
+// ==================================
+// Serialize a vector
+template<class T>
+ostream& operator<<(ostream& os, const vector<T>& v) {
+    for (T e : v) {
+        os << e << ",";
+    }
+    return os;
+}
+
+// convert any object to string
+template<class T>
+string to_string(T obj) {
+    ostringstream ss;
+    ss << obj;
+    return ss.str();
+}
+
+
+// ==================================
+//              Parsers
+// ==================================
+// Parse an vector of int
+template<class T>
+istream& operator>>(istream& is, vector<T>& v) {
+    string item;
+    while (getline(is, item, ',')) {
+        v.push_back(from_string<T>(item));
+    }
+    return is;
+}
+
+template<class T>
+T from_string(string s) {
+    istringstream ss(s);
+    T result;
+    ss >> result;
+    return result;
+}
+
+
+
+
+// ==================================
+//              Getters
+// ==================================
+// Get a configuration key
+template<class T>
+T ConfigParser::get(string key) {
+    try {
+        return from_string<T>(config.at(key));
+    } catch (out_of_range e) {
+        return from_string<T>(default_config.at(key));
+    }
+}
+
+// ==================================
+//              Setters
+// ==================================
+// Set a configuration key
+template<class T>
+void ConfigParser::set(string key, T value, bool default_conf) {
+    if (default_conf) {
+        default_config[key] = to_string(value);
+    } else {
+        config[key] = to_string(value);
+    }
+}

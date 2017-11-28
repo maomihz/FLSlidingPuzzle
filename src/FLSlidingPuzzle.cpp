@@ -16,7 +16,7 @@ static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
     // set to default "Player"
     string player_name;
     try {
-        player_name = config->get("player.name");
+        player_name = config->get<string>("player.name");
     } catch (out_of_range e) {
         player_name = "Player";
     }
@@ -149,9 +149,11 @@ static void game_end(Fl_Widget* gboard, void*) {
     // Insert the current score to the list of scores, and write back to the
     // file
     int score = game->score();
-    string player = config->get("player.name");
-    vector<int> scores = config->get_v(game->description() + ".scores");
-    vector<string> players = config->get_v_str(game->description() + ".players");
+    string player = config->get<string>("player.name");
+    vector<int> scores
+        = config->get<vector<int>>(game->description() + ".scores");
+    vector<string> players
+        = config->get<vector<string>>(game->description() + ".players");
     magic_insert(score, player, scores, players); // Insert the score
     config->set(game->description() + ".scores", scores);
     config->set(game->description() + ".players", players);
@@ -317,7 +319,7 @@ static void init_config(bool load = true) {
 
     config->set("selected_img", 0, true);
 
-    selected_img_game = config->get_int("selected_img");
+    selected_img_game = config->get<int>("selected_img");
 }
 
 

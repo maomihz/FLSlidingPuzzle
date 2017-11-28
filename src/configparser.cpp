@@ -1,97 +1,4 @@
 #include "configparser.h"
-#include <iostream>
-#include <sstream>
-
-// **** Private Helper Functions ****
-// ==================================
-//            Serializers
-// ==================================
-// Serialize a vector
-template<class T>
-ostream& operator<<(ostream& os, vector<T> v) {
-    for (T e : v) {
-        os << e << ",";
-    }
-    return os;
-}
-
-// convert any object to string
-template<class T>
-string to_string(T obj) {
-    ostringstream ss;
-    ss << obj;
-    return ss.str();
-}
-
-
-// Convert a vector to a string
-// {1,3,4,2,6,7} ==> "1,3,4,2,6,7,"
-string ConfigParser::to_str(vector<int> v) {
-    return to_string(v);
-}
-
-// Convert a string vector to a string
-string ConfigParser::to_str(vector<string> v) {
-    return to_string(v);
-}
-
-// Convert a int to a string
-// 54 ==> "54"
-string ConfigParser::to_str(int i) {
-    return to_string(i);
-}
-
-
-
-// ==================================
-//              Parsers
-// ==================================
-// Parse an vector of int
-vector<int> ConfigParser::to_v(string s) {
-    stringstream ss(s);
-
-    // Discard some initial characters
-    ss >> skipws;
-
-    // Initialize some variables
-    char delim;
-    int i;
-    vector<int> result;
-
-    // Read the numbers, ignore white space
-    while (ss >> skipws >> i >> skipws >> delim) {
-        result.push_back(i);
-    }
-    return result;
-}
-
-// Parse a vector of string
-vector<string> ConfigParser::to_v_str(string s) {
-    stringstream ss(s);
-
-    // Discard some initial characters
-    ss >> skipws;
-
-    // Initialize some variables
-    string i;
-    vector<string> result;
-
-    // Read the numbers, ignore white space
-    while (getline(ss, i, ',')) {
-        result.push_back(i);
-    }
-    return result;
-}
-
-// Parse an int
-int ConfigParser::to_i(string s) {
-    stringstream ss(s);
-    int i = 0;
-    ss >> i;
-    return i;
-}
-
-
 // *** Public Functions ***
 // ==================================
 //          File Loaders
@@ -100,16 +7,14 @@ int ConfigParser::to_i(string s) {
 void ConfigParser::load() {
     ifstream ifs(file);
     // Just ignore empty file
-    if (!ifs.is_open()) {
-        return;
+    if (ifs.is_open()) {
+        string key, value;
+        while(getline(ifs, key, '=')) {
+            getline(ifs, value);
+            config[key] = value;
+        }
+        ifs.close();
     }
-
-    string key, value;
-    while(getline(ifs, key, '=')) {
-        getline(ifs, value);
-        config[key] = value;
-    }
-    ifs.close();
 }
 
 // Write to file
@@ -120,51 +25,6 @@ void ConfigParser::write() {
     }
     ofs.close();
 }
-
-
-// ==================================
-//              Getters
-// ==================================
-// Get a configuration key
-string ConfigParser::get(string key) {
-    try {
-        return config.at(key);
-    } catch (out_of_range e) {
-        return default_config.at(key);
-    }
-}
-int ConfigParser::get_int(string key) {
-    return to_i(get(key));
-}
-vector<string> ConfigParser::get_v_str(string key) {
-    return to_v_str(get(key));
-}
-vector<int> ConfigParser::get_v(string key) {
-    return to_v(get(key));
-}
-
-// ==================================
-//              Setters
-// ==================================
-// Set a configuration key
-void ConfigParser::set(string key, string value, bool default_conf) {
-    if (default_conf) {
-        default_config[key] = value;
-    } else {
-        config[key] = value;
-    }
-}
-void ConfigParser::set(string key, int value, bool default_conf) {
-    set(key, to_str(value), default_conf);
-}
-void ConfigParser::set(string key, vector<string> value, bool default_conf) {
-    set(key, to_str(value), default_conf);
-}
-void ConfigParser::set(string key, vector<int> value, bool default_conf) {
-    set(key, to_str(value), default_conf);
-}
-
-
 
 
 // Change the file to read and write

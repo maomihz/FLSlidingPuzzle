@@ -12,6 +12,7 @@
 #include "GameBoard.h"
 #include "preset.h"
 #include "util.h"
+#include "configparser.h"
 
 using namespace std;
 using SPuzzle::Game;
