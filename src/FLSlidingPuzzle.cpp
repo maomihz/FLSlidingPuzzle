@@ -1,63 +1,11 @@
-#include <FL/Fl_Button.H>
-#include <FL/Fl_PNG_Image.H>
-
-#include <string>
-#include <sstream>
-#include <iostream>
-#include <vector>
-#include <cstdlib>
-
-#include "GameBoard.h"
-#include "preset.h"
-#include "util.h"
-
-using namespace std;
-using SPuzzle::Game;
-using SPuzzle::Direction;
-
-Fl_Group* splash;
-Fl_Group* game_win;
-Fl_Group* about_win;
-Fl_Group* difficulty;
-
-Fl_Window *win;
-GameBoard *gb;
-GameBoard *demo;
-InfoBoard *ib;
-
-const vector<Direction> demo_steps = {
-    SPuzzle::RIGHT,
-    SPuzzle::DOWN,
-    SPuzzle::LEFT,
-    SPuzzle::UP,
-    SPuzzle::UP,
-    SPuzzle::UP,
-};
-vector<Direction> demo_remain = demo_steps;
-
-
-
-Fl_PNG_Image* png = new Fl_PNG_Image("splash.png");
-Fl_PNG_Image* png2 = new Fl_PNG_Image("bbb.png");
-Fl_PNG_Image* small = new Fl_PNG_Image("small.png");
-Fl_PNG_Image* powered_by = new Fl_PNG_Image("powered_by.png");
-Fl_PNG_Image* bg = new Fl_PNG_Image("bg.png");
-
-
-
-Game* game;
-Game* demo_game;
-ConfigParser* config;
-
-static void hideall();
-
+#include "FLSlidingPuzzle.h"
 
 static void update_count(void*) {
     ib->redraw();
     Fl::repeat_timeout(0.05, update_count);
 }
 
-static void show_game(Fl_Widget* btn, void* data) {
+static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
     // Before showing the game, ask the user for name
     // If the name is already set then read that otherwise
     // set to default "Player"
@@ -94,16 +42,17 @@ static void show_game(Fl_Widget* btn, void* data) {
         game->new_game("random");
         break;
     }
+    pause->label("Quit");
     game_win->show();
     Fl::add_timeout(0.5, update_count);
 }
 
-static void show_difficulty(Fl_Widget* btn, void*) {
+static void show_difficulty(Fl_Widget* btn = nullptr, void* = nullptr) {
     hideall();
     difficulty->show();
 }
 
-static void show_about(Fl_Widget* btn, void*) {
+static void show_about(Fl_Widget* btn = nullptr, void* = nullptr) {
     hideall();
     about_win->show();
 }
@@ -126,7 +75,7 @@ static void anim_demo(void* data) {
 
 }
 
-static void show_main(Fl_Widget* btn, void*) {
+static void show_main(Fl_Widget* btn = nullptr, void* = nullptr) {
     hideall();
     demo_game->new_game(DEMO, -1, "demo");
     demo_remain = demo_steps;
@@ -135,6 +84,11 @@ static void show_main(Fl_Widget* btn, void*) {
 }
 
 static void game_end(Fl_Widget* gboard, void*) {
+    // if neither win or lose, then the game is started.
+    if (!game->win() && !game->lose()) {
+        pause->label("Pause");
+        return;
+    }
     ib->redraw();
     Fl::remove_timeout(update_count);
     int score = game->score();
@@ -177,6 +131,31 @@ static void get_hint(Fl_Widget* btn, void*) {
     Fl::add_timeout(0.01, anim_hint, (void*)6);
 }
 
+static void toggle_pause(Fl_Widget* btn = nullptr, void* = nullptr) {
+    // cout << game->paused() << endl;
+    if (game->started()) {
+        if (game->paused()) {
+            game->resume();
+            pause->label("Pause");
+            game_pause->hide();
+        } else {
+            game->pause();
+            pause->label("Resume");
+            game_pause->show();
+        }
+    } else {
+        show_main();
+    }
+    gb->redraw();
+    gb->take_focus();
+}
+
+static void force_quit(Fl_Widget* btn, void*) {
+    switch(fl_choice("Do you want to give up and quit?", "No", "Yes", 0)) {
+        case 1:
+            show_main();
+    }
+}
 
 static void hideall() {
     for (int i = 0; i < win->children(); ++i) {
@@ -192,6 +171,8 @@ int main(int argc, char **argv) {
     // Initialize configurations
     config = new ConfigParser("leaderboard.conf");
     config->load();
+
+    // Initialize default configurations
     vector<int> easy_scores(5,0),
                 normal_scores(5,0),
                 hard_scores(5,0),
@@ -261,16 +242,27 @@ int main(int argc, char **argv) {
     // *** Game ***
     game_win = new Fl_Group(0,0,win->w(), win->h());
     game = new Game(4);
+    // Overall background image
     Fl_Box* bgimg = new Fl_Box(0,0,win->w(),win->h());
     bgimg->image(bg);
     gb = new GameBoard(100,100,400,400, game, png2);
     ib = new InfoBoard(530,200,260,300, game, config);
     gb->callback(game_end);
-    Fl_Button* pause = new Fl_Button(550, 50, 100, 50, "Pause");
+    pause = new Fl_Button(550, 50, 100, 50, "Quit");
+    pause->callback(toggle_pause);
     Fl_Button* hint =  new Fl_Button(650, 50, 100, 50, "Hint");
     hint->callback(get_hint);
     game_win->end();
     game_win->hide();
+
+
+    // *** Game Pause ***
+    game_pause = new Fl_Group(0,0,win->w(), win->h());
+    Fl_Button* back_main = new Fl_Button(600, 100, 100, 50, "Back to Main");
+    back_main->callback(force_quit);
+    game_pause->end();
+    game_pause->hide();
+
 
 
     // *** About ***

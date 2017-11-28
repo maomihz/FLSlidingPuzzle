@@ -25,6 +25,6 @@ namespace SPuzzle {
 
         int dist(const Point a) const;
     };
-};
+}
 
 std::ostream& operator<<(std::ostream& os, SPuzzle::Point p);

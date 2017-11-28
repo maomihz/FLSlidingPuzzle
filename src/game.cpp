@@ -12,7 +12,13 @@ Game::Game(int size) :
     paused_(false),
     started_(false),
     description_("")
-{}
+{
+    // Initialize the solution
+    for (int i = 1; i < size * size; ++i) {
+        solution_.at(i - 1) = i;
+    }
+    solution_.at(size * size - 1) = 0;
+}
 
 Game::~Game() {}
 
@@ -27,6 +33,7 @@ void Game::new_game(std::string description) {
     started_ = false;    // When a new game is started, the started flag need
                          // to be set to false because at this time the timer
                          // should not run until the first move is made
+    paused_ = false;
     pause_duration = milliseconds::zero();
     description_ = description;
 }
@@ -41,14 +48,15 @@ void Game::new_game(std::vector<int> data, int limit, std::string description) {
     }
     steps_ = 0;
     started_ = false;
+    paused_ = false;
     steps_limit_ = limit;
     pause_duration = milliseconds::zero();
     description_ = description;
 }
 
 void Game::pause() {
-    // Only take action if the game is not paused
-    if (!paused_) {
+    // Only take action if the game is not paused, and is started
+    if (!paused_ && started_) {
         pause_start = now();
         paused_ = true;
     }
@@ -56,7 +64,7 @@ void Game::pause() {
 
 void Game::resume() {
     // Only take action if the game is paused
-    if (paused_) {
+    if (paused_ && started_) {
         pause_duration += (now() - pause_start);
         paused_ = false;
     }
@@ -254,8 +262,8 @@ int Game::score() const {
 }
 
 // ====== Accessers =======
-Board Game::board() { return board_; }
-Board Game::solution() { return solution_; }
+Board Game::board() const { return board_; }
+Board Game::solution() const { return solution_; }
 int Game::steps() const { return steps_; }
 int Game::steps_remain() const {
     if (steps_limit_ < 0) return -1;
@@ -276,5 +284,9 @@ int Game::duration() const {
     }
     // Otherwise return the actual time. It is the difference of the starting
     // time, not including total pause duration.
-    return (now() - start_time - pause_duration).count();
+    auto total_duration = now() - start_time - pause_duration;
+    if (paused_) {
+        total_duration -= (now() - pause_start);
+    }
+    return total_duration.count();
 }

@@ -106,8 +106,8 @@ namespace SPuzzle {
         int score() const;        // Calculate the score
 
         // These are all accessor functions
-        Board board();
-        Board solution();
+        Board board() const;
+        Board solution() const;
         Point last() const {return last_;}
         Point space() const {return space_;}
         std::string description() const { return description_; }

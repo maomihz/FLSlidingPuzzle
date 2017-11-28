@@ -13,15 +13,33 @@ void GameBoard::draw() {
     int size = game->board().size();  // The size of the game board
     int grid = h() / size;            // The width of each square. Assume
                                       // height to be less than width.
+
+    // Drawing if the game is paused
+    if (game->paused()) {
+        image->draw(x(), y());
+        fl_color(FL_BLACK);
+        fl_font(fl_font(), 50);
+        fl_draw("Paused", x(), y(), w(), h(), FL_ALIGN_CENTER);
+        return;
+    }
+
+
+    // Drawing if the game is not paused
     for (int j = 0; j < size; ++j) {
         for (int i = 0; i < size; ++i) {
-            int num = game->board().at(i,j);
+            SPuzzle::Board board;
+            if (game->paused()) {
+                board = game->solution();
+            } else {
+                board = game->board();
+            }
+            int num = board.at(i,j);
             // If the game is in winning position, draw everything including
             // the missing corner. It converts the "0" that is used to represent
             // space to the length of the board, so that the last piece draws
             // correctly.
             if (game->win() && num == 0) {
-                num = game->board().len();
+                num = board.len();
             }
             // If the game is not in winning position, then it crops the image
             // and draw each part.
@@ -101,21 +119,25 @@ void GameBoard::click(Point p) {
 
 // Handle the keyboard event
 int GameBoard::handle(int event) {
-    // This part handles keyboard event
-    // If the board is "Read Only", then do not handle any events
-    if (readonly_) {
+    // If the board is "Read Only", or if the game is paused,
+    // then do not handle any events
+    if (readonly_ || game->paused()) {
         return 1;
     }
+
+    // This part handles keyboard event
     if (event == FL_KEYBOARD || event == FL_PUSH) {
         take_focus();
+        // Cancel operation if there is an ongoing animation
         if (anim_run >= 0) {
             return 1;
         }
-        // Prevent operation if the game is in winning position or
-        // is paused
         using namespace SPuzzle;
-        if (!game->win() && !game->lose() && !game->paused()) {
+        // Prevent operation if the game is in winning position
+        if (!game->win() && !game->lose()) {
             // *** KEYBOARD EVENT ***
+            // Mark here that before the movement whether the game is started.
+            bool started = game->started();
             if (event == FL_KEYBOARD) {
                 // w/s/a/d are for gamers
                 // h/j/k/l are for vimers
@@ -143,6 +165,11 @@ int GameBoard::handle(int event) {
             }
             // After the movement, check if the game is winning
             if (game->win() || game->lose()) {
+                do_callback();
+            }
+            // If the game changed from not started to started, then
+            // do the same callback.
+            else if (!started && game->started()) {
                 do_callback();
             }
             redraw();

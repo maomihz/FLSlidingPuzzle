@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 
+#pragma once
 
 using namespace std;
 

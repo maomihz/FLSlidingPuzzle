@@ -3,6 +3,8 @@
 #include <string>
 using namespace std;
 
+#pragma once
+
 // This magic insertion is truly magic. Each call to the function
 // costs 50 Magic Point. Drink some potion to restore your magic point
 // before calling the function again.

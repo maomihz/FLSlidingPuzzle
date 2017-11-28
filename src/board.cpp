@@ -21,15 +21,21 @@ Board::Board(int size) :
 }
 
 // Copy constructor
-Board::Board(Board &another) : Board(another.size()) {
-    for (int i = 0; i < len(); ++i) {
-        at(i) = another.at(i);
-    }
+Board::Board(const Board &another) : Board(another.size()) {
+    (*this) = another;
 }
 
 // Destructor
 Board::~Board() {
     delete [] board;
+}
+
+// Assignment Operator
+Board& Board::operator=(const Board &another) {
+    for (int i = 0; i < len(); ++i) {
+        at(i) = another.at(i);
+    }
+    return *this;
 }
 
 // ================================================

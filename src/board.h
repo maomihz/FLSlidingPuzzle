@@ -22,8 +22,10 @@ namespace SPuzzle {
 
     public:
         Board(int size = 4);              // Constructor, defaults to size 4
-        Board(Board &another);            // Copy constructor
+        Board(const Board &another);      // Copy constructor
         ~Board();                         // Destructor
+
+        Board& operator=(const Board &another);     // Assignment
 
     	// The main storage uses a one-dimensional array, therefore
         // there is two different representation of the coordinates.
@@ -70,5 +72,5 @@ namespace SPuzzle {
 
     };
 
-};
+}
 std::ostream& operator<<(std::ostream& os, const SPuzzle::Board& b);
