@@ -6,6 +6,7 @@ OBJS = $(notdir ${SRCS:.cpp=.o})
 TESTOBJS = $(notdir ${TESTSRCS:.cpp=.o})
 
 BASEFLAGS = -g -Wall -Wextra -std=c++11 -Wno-unused-parameter -Wno-unused-variable
+# BASEFLAGS += -pedantic -fsanitize=address,undefined
 TARGET = FLSlidingPuzzle
 TESTS = test
 
@@ -21,7 +22,7 @@ all: $(TARGET) $(TESTS)
 board.o: src/board.cpp src/board.h
 game.o: src/game.cpp src/game.h
 point.o: src/point.cpp src/point.h
-FLSlidingPuzzle.o: src/GameBoard.h
+FLSlidingPuzzle.o: src/FLSlidingPuzzle.cpp src/FLSlidingPuzzle.h src/GameBoard.h
 GameBoard.o: src/GameBoard.cpp src/GameBoard.h
 InfoBoard.o: src/InfoBoard.cpp src/GameBoard.h
 util.o: src/util.cpp src/util.h
