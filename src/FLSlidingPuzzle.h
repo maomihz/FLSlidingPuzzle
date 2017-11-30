@@ -45,19 +45,19 @@ vector<Direction> demo_remain = demo_steps;
 
 
 
-Fl_PNG_Image* img_sky =        new Fl_PNG_Image("res/sky.png");
-Fl_PNG_Image* img_splash =     new Fl_PNG_Image("res/splash.png");
-Fl_PNG_Image* img_difficulty = new Fl_PNG_Image("res/difficulty.png");
-Fl_PNG_Image* img_demo =       new Fl_PNG_Image("res/demo.png");
-Fl_PNG_Image* img_game_bg =    new Fl_PNG_Image("res/game.png");
-Fl_PNG_Image* img_leaderboard= new Fl_PNG_Image("res/leaderboard_bg.png");
-Fl_PNG_Image* img_powered_by = new Fl_PNG_Image("res/powered_by.png");
-Fl_PNG_Image* img_settings =   new Fl_PNG_Image("res/settings_bg.png");
+Fl_Image* img_sky =        new Fl_JPEG_Image("res/sky.jpg");
+Fl_Image* img_splash =     new Fl_PNG_Image("res/splash.png");
+Fl_Image* img_difficulty = new Fl_PNG_Image("res/difficulty.png");
+Fl_Image* img_demo =       new Fl_PNG_Image("res/demo.png");
+Fl_Image* img_game_bg =    new Fl_PNG_Image("res/game.png");
+Fl_Image* img_leaderboard= new Fl_PNG_Image("res/leaderboard_bg.png");
+Fl_Image* img_powered_by = new Fl_PNG_Image("res/powered_by.png");
+Fl_Image* img_settings =   new Fl_PNG_Image("res/settings_bg.png");
 vector<pair<Fl_Image*, string>> img_games = {
-    pair<Fl_JPEG_Image*, string>(new Fl_JPEG_Image("res/games/default.jpg"), "Numbers"),
-    pair<Fl_JPEG_Image*, string>(new Fl_JPEG_Image("res/games/puppy.jpg"), "Puppy"),
-    pair<Fl_JPEG_Image*, string>(new Fl_JPEG_Image("res/games/deemo.jpg"), "Alice"),
-    pair<Fl_JPEG_Image*, string>(new Fl_JPEG_Image("res/games/miku.jpg"), "Hatsume Miku")
+    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/default.jpg"), "Numbers"),
+    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/puppy.jpg"), "Puppy"),
+    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/deemo.jpg"), "Alice"),
+    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/miku.jpg"), "Hatsume Miku")
 };
 vector<Fl_Image*> img_help = {
     new Fl_PNG_Image("res/help/1.png"),
