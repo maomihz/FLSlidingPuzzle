@@ -60,9 +60,9 @@ vector<pair<Fl_Image*, string>> img_games = {
     pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/miku.jpg"), "Hatsume Miku")
 };
 vector<Fl_Image*> img_help = {
-    new Fl_PNG_Image("res/help/1.png"),
-    new Fl_PNG_Image("res/help/2.png"),
-    new Fl_PNG_Image("res/help/3.png"),
+    new Fl_JPEG_Image("res/help/1.jpg"),
+    new Fl_JPEG_Image("res/help/2.jpg"),
+    new Fl_JPEG_Image("res/help/3.jpg"),
 };
 
 Fl_Button* pause;
@@ -77,3 +77,4 @@ ConfigParser* config;
 
 static void hideall();
 static void force_quit(Fl_Widget* btn = nullptr, void* = nullptr);
+static void show_help(Fl_Widget* btn = nullptr, void* = nullptr);

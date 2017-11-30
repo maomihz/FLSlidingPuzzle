@@ -77,6 +77,20 @@ static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
 // Show the difficulty selection screen. Very simple callback, just hides
 // all other elements and show the difficulty group.
 static void show_difficulty(Fl_Widget* btn = nullptr, void* = nullptr) {
+    // When the player clicks "New Game", check first if the tutorial need
+    // to show.
+    if (config->get<bool>("show_tutorial")) {
+        // Ask the question
+        int choice = fl_choice("Looks like it's the first time you play the game!\n\
+            Do you want to view the tutorial? ", "No", "Yes", 0);
+        // Remember so won't ask again
+        config->set("show_tutorial", false);
+        config->write();
+        if (choice == 1) { // Yes
+            show_help();
+            return;
+        }
+    }
     hideall();
     difficulty->show();
 }
@@ -136,7 +150,7 @@ static void show_settings(Fl_Widget* btn = nullptr, void* = nullptr) {
 }
 
 // Show the help screen. Simple Callback.
-static void show_help(Fl_Widget* btn = nullptr, void* = nullptr) {
+static void show_help(Fl_Widget* btn, void*) {
     hideall();
     help_win->show();
 }
@@ -299,6 +313,7 @@ static void init_config(bool load = true) {
 
     // By default select the first image
     config->set("selected_img", 0, true);
+    config->set("show_tutorial", true, true);
     selected_img_game = config->get<int>("selected_img");
 }
 
