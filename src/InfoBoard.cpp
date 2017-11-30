@@ -53,11 +53,14 @@ void InfoBoard::draw_leaderboard() {
     // Draw the high scores
     fl_draw("LEADERBOARD", x() + 125, y() + 5, 100, 25, FL_ALIGN_INSIDE);
     int score = game->score();
-    string player = config->get<string>("player.name");
+    // Only take the first 12 characters. Player is not expected to put
+    // very long name.
+    string player = config->get<string>("player.name").substr(0,12);
 
     for (string::size_type i = 0; i < scores.size(); ++i) {
-        string p = players.at(i);
+        string p = players.at(i).substr(0,12);
         string s = std::to_string(scores.at(i));
+        // If the string is empty then put <Empty>
         if (!p.length()) p = "<Empty>";
         fl_draw(p.c_str(),
             x() + 115, y() + 5 + 40 * (i + 1),
