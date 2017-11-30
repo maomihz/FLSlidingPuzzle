@@ -1,4 +1,4 @@
-#include "GameBoard.h"
+#include "InfoBoard.h"
 #include "util.h"
 #include <iostream>
 #include <string>
@@ -8,9 +8,6 @@
 void InfoBoard::draw() {
     // Call the draw function of the parent
     Fl_Box::draw();
-    // Fill the background
-    fl_color(FL_BACKGROUND_COLOR);
-    fl_rectf(x(),y(),w(),h());
 
     // Draw the text
     fl_color(FL_BLACK);
@@ -22,23 +19,23 @@ void InfoBoard::draw() {
     // Depending on whether the game is in "puzzle mode" or "free mode",
     // it draws different text.
     if (game->steps_limit() > 0) {
-        fl_draw("Steps Remain", x(), y(), 100, 25, FL_ALIGN_INSIDE);
+        fl_draw("Steps Left", x(), y() + 25, 100, 25, FL_ALIGN_INSIDE);
         ss_steps << game->steps_remain();
     } else {
-        fl_draw("Steps", x(), y(), 100, 25, FL_ALIGN_INSIDE);
+        fl_draw("Steps", x(), y() + 25, 100, 25, FL_ALIGN_INSIDE);
         ss_steps << game->steps();
     }
     fl_draw(ss_steps.str().c_str(),
-        x(), y() + 25,
+        x(), y() + 50,
         100, 25, FL_ALIGN_INSIDE);
 
     // Show how many tiles are in the correct location
-    fl_draw("Progress", x(), y() + 75, 100, 25, FL_ALIGN_INSIDE);
+    fl_draw("Progress", x(), y() + 110, 100, 25, FL_ALIGN_INSIDE);
     std::stringstream ss_progress;
     ss_progress << game->correct_count();
     ss_progress << "/";
     ss_progress << game->board().len() - 1;
-    fl_draw(ss_progress.str().c_str(), x(), y() + 100, 100, 25, FL_ALIGN_INSIDE);
+    fl_draw(ss_progress.str().c_str(), x(), y() + 135, 100, 25, FL_ALIGN_INSIDE);
 
     // build the game time
     int duration = game->duration();
@@ -46,14 +43,14 @@ void InfoBoard::draw() {
     ss_time << std::setw(2) << std::setfill('0') << duration / 60000;
     ss_time << ":";
     ss_time << std::setw(2) << std::setfill('0') << duration / 1000 % 60;
-    fl_draw("Time", x(), y() + 150,
+    fl_draw("Time", x(), y() + 200,
         100, 25, FL_ALIGN_INSIDE);
     fl_draw(ss_time.str().c_str(),
-        x(), y() + 175,
+        x(), y() + 225,
         100, 25, FL_ALIGN_INSIDE);
 
     // Draw the high scores
-    fl_draw("LEADERBOARD", x() + 125, y(), 100, 25, FL_ALIGN_INSIDE);
+    fl_draw("LEADERBOARD", x() + 125, y() + 5, 100, 25, FL_ALIGN_INSIDE);
     int score = game->score();
     string player = config->get<string>("player.name");
     // Magic insertion
@@ -64,10 +61,10 @@ void InfoBoard::draw() {
         string s = std::to_string(scores.at(i));
         if (!p.length()) p = "<Empty>";
         fl_draw(p.c_str(),
-            x() + 115, y() + 40 * (i + 1),
+            x() + 115, y() + 5 + 40 * (i + 1),
             75, 25, FL_ALIGN_LEFT);
         fl_draw(s.c_str(),
-            x() + 210, y() + 40 * (i + 1),
+            x() + 210, y() + 5 + 40 * (i + 1),
             25, 25, FL_ALIGN_RIGHT);
     }
 

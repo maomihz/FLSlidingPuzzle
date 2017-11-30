@@ -359,6 +359,7 @@ static void init_game() {
     bgimg->image(img_game_bg);
     gb = new GameBoard(100,100,400,400, game, img_games.at(selected_img_game).first);
     ib = new InfoBoard(530,200,260,300, game, config);
+    ib->image(img_leaderboard);
     gb->callback(game_end);
     pause = new Fl_Button(550, 50, 100, 50, "Pause");
     pause->callback(toggle_pause);

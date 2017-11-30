@@ -10,6 +10,7 @@
 #include <utility>
 
 #include "GameBoard.h"
+#include "InfoBoard.h"
 #include "HelpPanel.h"
 #include "preset.h"
 #include "util.h"
@@ -48,6 +49,7 @@ Fl_PNG_Image* img_splash =     new Fl_PNG_Image("res/splash.png");
 Fl_PNG_Image* img_difficulty = new Fl_PNG_Image("res/difficulty.png");
 Fl_PNG_Image* img_demo =       new Fl_PNG_Image("res/demo.png");
 Fl_PNG_Image* img_game_bg =    new Fl_PNG_Image("res/game.png");
+Fl_PNG_Image* img_leaderboard= new Fl_PNG_Image("res/leaderboard_bg.png");
 Fl_PNG_Image* img_powered_by = new Fl_PNG_Image("res/powered_by.png");
 Fl_PNG_Image* img_settings =   new Fl_PNG_Image("res/settings_bg.png");
 vector<pair<Fl_Image*, string>> img_games = {
