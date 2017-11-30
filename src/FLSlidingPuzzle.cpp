@@ -254,7 +254,7 @@ static void select_img(Fl_Widget* btn, void* v) {
 
     // Update the settings image display
     selection_box->image(img_games.at(selected_img_game).first);
-    selection_box->label((img_games.at(selected_img_game).second).c_str());
+    selection_box->label(img_games.at(selected_img_game).second.c_str());
 
     // Update the configuration
     config->set("selected_img", selected_img_game);
@@ -262,7 +262,6 @@ static void select_img(Fl_Widget* btn, void* v) {
 
     // Redraw all the windows to update the display
     Fl::redraw();
-
 }
 
 // Callback to prompt the user and exit to the main menu
@@ -422,13 +421,18 @@ static void init_help() {
 // *** Settings ***
 static void init_settings() {
     settings_win = new Fl_Group(0,0,win->w(), win->h());
+    // Background Image
     Fl_Box* settings_bg = new Fl_Box(0,0,win->w(), win->h());
     settings_bg->image(img_settings);
+    // Image box
     selection_box = new Fl_Box(50,50,400,400);
     selection_box->labelsize(20);
+
+    // This doesn't do anything, just refresh the screen
     select_img(nullptr, (void*)0);
-    Fl_Button *prev_img = new Fl_Button(100,500,100,50,"Previous");
-    Fl_Button *next_img = new Fl_Button(300,500,100,50,"Next");
+
+    Fl_Button *prev_img = new Fl_Button(100,500,100,50,"@<- Previous");
+    Fl_Button *next_img = new Fl_Button(300,500,100,50,"Next @->");
     prev_img->callback(select_img, (void*)-1);
     next_img->callback(select_img, (void*)1);
     Fl_Button *save = new Fl_Button(500,500,100,50,"Save");

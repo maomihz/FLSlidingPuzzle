@@ -54,10 +54,10 @@ Fl_Image* img_leaderboard= new Fl_PNG_Image("res/leaderboard_bg.png");
 Fl_Image* img_powered_by = new Fl_PNG_Image("res/powered_by.png");
 Fl_Image* img_settings =   new Fl_PNG_Image("res/settings_bg.png");
 vector<pair<Fl_Image*, string>> img_games = {
-    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/default.jpg"), "Numbers"),
-    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/puppy.jpg"), "Puppy"),
-    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/deemo.jpg"), "Alice"),
-    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/miku.jpg"), "Hatsume Miku")
+    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/default.jpg"), "Numbers\n1 / 4"),
+    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/puppy.jpg"), "Puppy\n2 / 4"),
+    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/deemo.jpg"), "Alice\n3 / 4"),
+    pair<Fl_Image*, string>(new Fl_JPEG_Image("res/games/miku.jpg"), "Hatsume Miku\n4 / 4")
 };
 vector<Fl_Image*> img_help = {
     new Fl_JPEG_Image("res/help/1.jpg"),
