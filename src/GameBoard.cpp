@@ -202,11 +202,8 @@ void GameBoard::handle_mouse_move(int ex, int ey) {
 
 int GameBoard::handle(int event) {
     // If the board is "Read Only", or if the game is paused, or if
-    // an animation is running.
-    // then do not handle any events
-    if (readonly_ || game->paused() || anim_run >= 0) {
-        return 1;
-    }
+    // an animation is running, then do not handle any events
+    if (readonly_ || game->paused() || anim_run >= 0) return 1;
 
     // This part handles keyboard event
     if (event == FL_KEYBOARD || event == FL_PUSH) {

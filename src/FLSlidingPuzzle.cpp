@@ -164,11 +164,8 @@ static void game_end(Fl_Widget* gboard, void*) {
     config->write();
 
     // Display a dialog to indicate win or lose
-    if (game->win()) {
-        fl_alert("You Win! Your score is %d.", score);
-    } else {
-        fl_alert("Game Over! Your score is %d.", score);
-    }
+    if (game->win()) fl_alert("You Win! Your score is %d.", score);
+    else fl_alert("Game Over! Your score is %d.", score);
 
     // Ask the user whether start another game or quit
     switch(fl_choice("Do you want to play another game?", "No", "Yes", 0)) {
