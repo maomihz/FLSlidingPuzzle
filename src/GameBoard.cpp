@@ -169,7 +169,7 @@ int GameBoard::handle(int event) {
             }
             redraw();
         }
-        // Regardless of what, press r will restart the game
+        // Regardless of what, pressing r will restart the game
         // Disallow the action for now
         if (Fl::event_key() == 'r' && false) {
             game->new_game();
