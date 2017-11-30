@@ -75,7 +75,9 @@ Fl_Box *selection_box;
 
 ConfigParser* config;
 
+// Some functions that need to be used before definition
 static void hideall();
 static void force_quit(Fl_Widget* btn = nullptr, void* = nullptr);
 static void show_help(Fl_Widget* btn = nullptr, void* = nullptr);
 static void init_config(bool load = true);
+static void select_img(Fl_Widget* btn, void* v);

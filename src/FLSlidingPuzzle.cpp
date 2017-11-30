@@ -146,6 +146,8 @@ static void show_main(Fl_Widget* btn = nullptr, void* = nullptr) {
 // Show the setting screen. Simple callback.
 static void show_settings(Fl_Widget* btn = nullptr, void* = nullptr) {
     hideall();
+    // This doesn't do anything, just refresh the screen
+    select_img(nullptr, (void*)0);
     settings_win->show();
 }
 
@@ -313,8 +315,7 @@ static void hideall() {
 // whether to load the config from file. Set it to false resets the
 // configuration file.
 static void init_config(bool load) {
-    delete config; // Delete the previous configuration
-    config = new ConfigParser("leaderboard.conf");
+    config->clear();
     if (load) {
         config->load();
     }
@@ -443,9 +444,6 @@ static void init_settings() {
     selection_box = new Fl_Box(50,50,400,400);
     selection_box->labelsize(20);
 
-    // This doesn't do anything, just refresh the screen
-    select_img(nullptr, (void*)0);
-
     Fl_Button *prev_img = new Fl_Button(100,500,100,50,"@<- Previous");
     Fl_Button *next_img = new Fl_Button(300,500,100,50,"Next @->");
     prev_img->callback(select_img, (void*)-1);
@@ -464,6 +462,7 @@ int main(int argc, char **argv) {
     srand(time(nullptr));
 
     // Initialize configuration file
+    config = new ConfigParser("leaderboard.conf");
     init_config();
 
     // Create the FL Window

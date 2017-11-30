@@ -51,6 +51,7 @@ public:
     template<class T>   // Set a configuration item
     void set(string key, T value, bool default_conf=false);
 
+    void clear(bool default_conf=false); // Clear all configuration items
     // Change the file to read or write
     void set_file(string fname);
 };

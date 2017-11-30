@@ -31,3 +31,9 @@ void ConfigParser::write() {
 void ConfigParser::set_file(string fname) {
     file = fname;
 }
+
+void ConfigParser::clear(bool default_conf) {
+    // Clear both config
+    default_config.clear();
+    config.clear();
+}
