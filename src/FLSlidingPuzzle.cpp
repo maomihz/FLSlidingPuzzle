@@ -7,9 +7,31 @@ static void update_count(void*) {
     Fl::repeat_timeout(0.05, update_count);
 }
 
-// Start a new game and show the game window. Callback for the start button.
+// Simply start a new game.
 // Takes a data to specify the type of the game, and in this program there
 // are 5 types, easy, normal, hard, impossible and random.
+static void init_new_game(int mode) {
+    switch (mode) {
+    case 1: // Integer 1 represents "Easy"
+        game->new_game(EASY.at(rand() % EASY.size()), 10, "easy");
+        break;
+    case 2: // Integer 2 represents "Normal"
+        game->new_game(NORMAL.at(rand() % NORMAL.size()), 20, "normal");
+        break;
+    case 3: // Integer 3 represents "Hard"
+        game->new_game(HARD.at(rand() % HARD.size()), 40, "hard");
+        break;
+    case 4: // Integer 4 represents "Impossible"
+        game->new_game(IMPOSSIBLE.at(rand() % IMPOSSIBLE.size()), 80, "impossible");
+        break;
+    default: // Integer 0 (usually) represents "Random"
+        game->new_game("random");
+        break;
+    }
+}
+
+
+// Start a new game and show the game window. Callback for the start button.
 static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
     // Before showing the game, ask the user for name
     // If the name is already set then read that otherwise
@@ -35,24 +57,7 @@ static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
     // There are two different game modes, the puzzle mode which limits the
     // amount of steps, and the free mode which is generated randomly.
     // They have different scoring system.
-    int mode = fl_intptr_t(data);
-    switch (mode) {
-    case 1: // Integer 1 represents "Easy"
-        game->new_game(EASY.at(rand() % EASY.size()), 10, "easy");
-        break;
-    case 2: // Integer 2 represents "Normal"
-        game->new_game(NORMAL.at(rand() % NORMAL.size()), 20, "normal");
-        break;
-    case 3: // Integer 3 represents "Hard"
-        game->new_game(HARD.at(rand() % HARD.size()), 40, "hard");
-        break;
-    case 4: // Integer 4 represents "Impossible"
-        game->new_game(IMPOSSIBLE.at(rand() % IMPOSSIBLE.size()), 80, "impossible");
-        break;
-    default: // Integer 0 (usually) represents "Random"
-        game->new_game("random");
-        break;
-    }
+    init_new_game(fl_intptr_t(data));
 
     // Reset the label
     pause->label("Pause");
@@ -66,6 +71,8 @@ static void show_game(Fl_Widget* btn = nullptr, void* data = nullptr) {
     // Refresh Leaderboard, take in newly inserted score
     ib->update();
 }
+
+
 
 // Show the difficulty selection screen. Very simple callback, just hides
 // all other elements and show the difficulty group.
@@ -266,63 +273,34 @@ static void hideall() {
 }
 
 
+
+// ***** ------------------- *****
+// **     The Main Function     **
+// ***** ------------------- *****
+
 // function to initialize the configuration file. The load argument indicates
 // whether to load the config from file. Set it to false resets the
 // configuration file.
 static void init_config(bool load = true) {
-    delete config;
+    delete config; // Delete the previous configuration
     config = new ConfigParser("leaderboard.conf");
     if (load) {
         config->load();
     }
 
     // Set the default configuration values
-    vector<int> easy_scores(5,0),
-                normal_scores(5,0),
-                hard_scores(5,0),
-                impossible_scores(5,0),
-                random_scores(5,0);
-    vector<string> easy_players(5,""),
-                normal_players(5,""),
-                hard_players(5,""),
-                impossible_players(5,""),
-                random_players(5,"");
+    for (string mode : {"easy", "normal", "hard", "impossible", "random"}) {
+        config->set(mode + ".scores", vector<int>(5,0), true);
+        config->set(mode + ".players", vector<string>(5,""), true);
+    }
 
-    config->set("easy.scores", easy_scores, true);
-    config->set("normal.scores", normal_scores, true);
-    config->set("hard.scores", hard_scores, true);
-    config->set("impossible.scores", impossible_scores, true);
-    config->set("random.scores", random_scores, true);
-
-    config->set("easy.players", easy_players, true);
-    config->set("normal.players", normal_players, true);
-    config->set("hard.players", hard_players, true);
-    config->set("impossible.players", impossible_players, true);
-    config->set("random.players", random_players, true);
-
+    // By default select the first image
     config->set("selected_img", 0, true);
-
     selected_img_game = config->get<int>("selected_img");
 }
 
-
-// ***** ------------------- *****
-// **     The Main Function     **
-// ***** ------------------- *****
-int main(int argc, char **argv) {
-    // Seed random number generator
-    srand(time(nullptr));
-
-    // Initialize configuration file
-    init_config();
-
-    // Create the FL Window
-    string title = "FL Sliding Puzzle";
-    win = new Fl_Window(100, 100, 800, 600, title.c_str());
-    win->position((Fl::w() - win->w())/2, (Fl::h() - win->h())/2);
-
-
-    // *** Splash Screen ***
+// *** Splash Screen ***
+static void init_splash() {
     splash            = new Fl_Group(0,0,win->w(), win->h());
     Fl_Box* main_bg   = new Fl_Box(0,0,win->w(), win->h());
     main_bg->image(img_splash);
@@ -341,9 +319,10 @@ int main(int argc, char **argv) {
     settings->callback(show_settings);
     quit->callback(cb_exit);
     splash->end();
+}
 
-
-    // *** Difficulty Selection ***
+// *** Difficulty Selection ***
+static void init_difficulty() {
     difficulty            = new Fl_Group(0,0,win->w(),win->h());
     Fl_Box* difficulty_bg = new Fl_Box(0,0,win->w(), win->h());
     difficulty_bg->image(img_difficulty);
@@ -361,9 +340,11 @@ int main(int argc, char **argv) {
     back      ->callback(show_main);
     difficulty->end();
     difficulty->hide();
+}
 
 
-    // *** Game ***
+// *** Game ***
+static void init_game() {
     game_win = new Fl_Group(0,0,win->w(), win->h());
     game = new Game(4);
     // Overall background image
@@ -380,19 +361,21 @@ int main(int argc, char **argv) {
     hint->callback(get_hint);
     game_win->end();
     game_win->hide();
+}
 
 
-    // *** Game Pause ***
+// *** Game Pause ***
+static void init_pause() {
     game_pause = new Fl_Group(0,0,win->w(), win->h());
     Fl_Box* pause_label = new Fl_Box(100, 0, 400, 50, "Game Paused");
     pause_label->align(FL_ALIGN_CENTER);
     pause_label->labelsize(40);
     game_pause->end();
     game_pause->hide();
+}
 
-
-
-    // *** About ***
+// *** About ***
+static void init_about() {
     about_win = new Fl_Group(0,0,win->w(), win->h());
     Fl_Box *about_box    = new Fl_Box(100,100,100,100, "");
     Fl_Button *main_btn  = new Fl_Button(350,500,100,50,"Go back");
@@ -401,8 +384,10 @@ int main(int argc, char **argv) {
     main_btn->callback(show_main);
     about_win->end();
     about_win->hide();
+}
 
-    // *** Settings ***
+// *** Settings ***
+static void init_settings() {
     settings_win = new Fl_Group(0,0,win->w(), win->h());
     Fl_Box* settings_bg = new Fl_Box(0,0,win->w(), win->h());
     settings_bg->image(img_settings);
@@ -417,7 +402,30 @@ int main(int argc, char **argv) {
     save->callback(show_main);
     settings_win->end();
     settings_win->hide();
+}
 
+
+int main(int argc, char **argv) {
+    // Seed random number generator
+    srand(time(nullptr));
+
+    // Initialize configuration file
+    init_config();
+
+    // Create the FL Window
+    string title = "FL Sliding Puzzle";
+    win = new Fl_Window(100, 100, 800, 600, title.c_str());
+    win->position((Fl::w() - win->w())/2, (Fl::h() - win->h())/2);
+
+    // Initialize all the components
+    init_splash();
+    init_difficulty();
+    init_game();
+    init_pause();
+    init_about();
+    init_settings();
+
+    // End of the window, run the event loop
     win->end();
     win->show(argc, argv);
     return Fl::run();

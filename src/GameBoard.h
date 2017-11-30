@@ -17,6 +17,10 @@ using SPuzzle::Point;
 // is started, the focus must be on this Gameboard otherwise event would not
 // be handled.
 class GameBoard : public Fl_Box {
+private:
+    void handle_keyboard(int key);
+    void handle_mouse(int ex, int ey);
+    void handle_mouse_move(int ex, int ey);
 public:
     Game* game;        // The game the board represents
     Fl_Image* image;   // The image that is displayed on screen
