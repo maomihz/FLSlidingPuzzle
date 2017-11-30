@@ -152,6 +152,9 @@ static void show_settings(Fl_Widget* btn = nullptr, void* = nullptr) {
 // Show the help screen. Simple Callback.
 static void show_help(Fl_Widget* btn, void*) {
     hideall();
+    // Don't prompt the user again when new game starts
+    config->set("show_tutorial", false);
+    config->write();
     help_win->show();
 }
 
@@ -264,6 +267,18 @@ static void select_img(Fl_Widget* btn, void* v) {
     Fl::redraw();
 }
 
+// Reset leaderboard and all other user configurations
+// Ask user for confirmation before proceeding.
+static void reset_leaderboard(Fl_Widget* btn, void* v) {
+    if (fl_choice("Reset all leaderboard and user configuration!\n\
+        Are you sure to do this?", "No", "Yes", 0)) {
+            // Reset configuration without loading from disk
+            init_config(false);
+            config->write();
+            show_main();
+        }
+}
+
 // Callback to prompt the user and exit to the main menu
 static void force_quit(Fl_Widget* btn, void*) {
     // Ask the question and let user choose yes or no.
@@ -297,7 +312,7 @@ static void hideall() {
 // function to initialize the configuration file. The load argument indicates
 // whether to load the config from file. Set it to false resets the
 // configuration file.
-static void init_config(bool load = true) {
+static void init_config(bool load) {
     delete config; // Delete the previous configuration
     config = new ConfigParser("leaderboard.conf");
     if (load) {
@@ -437,6 +452,8 @@ static void init_settings() {
     next_img->callback(select_img, (void*)1);
     Fl_Button *save = new Fl_Button(500,500,100,50,"Save");
     save->callback(show_main);
+    Fl_Button *reset_config = new Fl_Button(550,300,150,100, "Reset Leaderboard");
+    reset_config->callback(reset_leaderboard);
     settings_win->end();
     settings_win->hide();
 }

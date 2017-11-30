@@ -78,3 +78,4 @@ ConfigParser* config;
 static void hideall();
 static void force_quit(Fl_Widget* btn = nullptr, void* = nullptr);
 static void show_help(Fl_Widget* btn = nullptr, void* = nullptr);
+static void init_config(bool load = true);
