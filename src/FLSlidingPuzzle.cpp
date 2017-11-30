@@ -220,6 +220,7 @@ static void anim_hint(void* data) {
 // Callback function to start the blinking hint
 static void get_hint(Fl_Widget* btn = nullptr, void* = nullptr) {
     Fl::add_timeout(0.01, anim_hint, (void*)6);
+    gb->take_focus();
 }
 
 
@@ -289,6 +290,7 @@ static void force_quit(Fl_Widget* btn, void*) {
         || fl_choice("Do you want to give up and quit?", "No", "Yes", 0)) {
         show_main();
     }
+    gb->take_focus();
 }
 
 // Callback function to exit the program.

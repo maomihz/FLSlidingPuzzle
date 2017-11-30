@@ -68,7 +68,8 @@ template<class T> T from_string(string s);
 template<class T>
 ostream& operator<<(ostream& os, const vector<T>& v) {
     for (T e : v) {
-        os << e << ",";
+        // Seperator is "^"
+        os << e << "^";
     }
     return os;
 }
@@ -89,7 +90,8 @@ string to_string(T obj) {
 template<class T>
 istream& operator>>(istream& is, vector<T>& v) {
     string item;
-    while (getline(is, item, ',')) {
+    // Seperator is "^"
+    while (getline(is, item, '^')) {
         v.push_back(from_string<T>(item));
     }
     return is;
