@@ -135,6 +135,12 @@ static void show_settings(Fl_Widget* btn = nullptr, void* = nullptr) {
     settings_win->show();
 }
 
+// Show the help screen. Simple Callback.
+static void show_help(Fl_Widget* btn = nullptr, void* = nullptr) {
+    hideall();
+    help_win->show();
+}
+
 // Callback for both the end of the game and the start of the game.
 // Update some elements when (after) the game is started, and prompt the user
 // when the game is ended.
@@ -315,6 +321,7 @@ static void init_splash() {
     demo->readonly(true);
     Fl::add_timeout(1, anim_demo);
     start->callback(show_difficulty);
+    help->callback(show_help);
     about->callback(show_about);
     settings->callback(show_settings);
     quit->callback(cb_exit);
@@ -386,6 +393,15 @@ static void init_about() {
     about_win->hide();
 }
 
+// Help
+static void init_help() {
+    help_win = new Fl_Group(0,0,win->w(), win->h());
+    HelpPanel* help_panel = new HelpPanel(0,0,win->w(), win->h(), img_help);
+    help_panel->callback(show_main);
+    help_win->end();
+    help_win->hide();
+}
+
 // *** Settings ***
 static void init_settings() {
     settings_win = new Fl_Group(0,0,win->w(), win->h());
@@ -423,6 +439,7 @@ int main(int argc, char **argv) {
     init_game();
     init_pause();
     init_about();
+    init_help();
     init_settings();
 
     // End of the window, run the event loop

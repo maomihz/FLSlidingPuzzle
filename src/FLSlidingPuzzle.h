@@ -10,6 +10,7 @@
 #include <utility>
 
 #include "GameBoard.h"
+#include "HelpPanel.h"
 #include "preset.h"
 #include "util.h"
 #include "configparser.h"
@@ -24,6 +25,7 @@ Fl_Group* game_pause;
 Fl_Group* about_win;
 Fl_Group* difficulty;
 Fl_Group* settings_win;
+Fl_Group* help_win;
 
 Fl_Window *win;
 GameBoard *gb;
@@ -53,6 +55,11 @@ vector<pair<Fl_Image*, string>> img_games = {
     pair<Fl_JPEG_Image*, string>(new Fl_JPEG_Image("res/games/puppy.jpg"), "Puppy"),
     pair<Fl_JPEG_Image*, string>(new Fl_JPEG_Image("res/games/deemo.jpg"), "Alice"),
     pair<Fl_JPEG_Image*, string>(new Fl_JPEG_Image("res/games/miku.jpg"), "Hatsume Miku")
+};
+vector<Fl_Image*> img_help = {
+    new Fl_PNG_Image("res/help/1.png"),
+    new Fl_PNG_Image("res/help/2.png"),
+    new Fl_PNG_Image("res/help/3.png"),
 };
 
 Fl_Button* pause;

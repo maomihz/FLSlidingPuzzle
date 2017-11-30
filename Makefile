@@ -25,6 +25,7 @@ point.o: src/point.cpp src/point.h
 FLSlidingPuzzle.o: src/FLSlidingPuzzle.cpp src/FLSlidingPuzzle.h src/GameBoard.h
 GameBoard.o: src/GameBoard.cpp src/GameBoard.h
 InfoBoard.o: src/InfoBoard.cpp src/GameBoard.h
+HelpPanel.o: src/HelpPanel.cpp src/HelpPanel.h
 util.o: src/util.cpp src/util.h
 configparser.o: src/configparser.cpp src/configparser.h
 test.o: tests/test.cpp src/configparser.h
