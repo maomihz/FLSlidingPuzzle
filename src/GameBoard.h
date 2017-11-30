@@ -12,9 +12,9 @@ using SPuzzle::Point;
 
 
 // The GameBoard class is used to represent an actual game board. The internal
-// game board does not handle any images, but this class splits and paint the
+// game board does not handle any images, but this class splits and prints the
 // image to the screen. It refreshes only when an event happens. When the game
-// is started, the focus must be on this Gameboard otherwise event would not
+// is started, the focus must be on this Gameboard otherwise the event would not
 // be handled.
 class GameBoard : public Fl_Box {
 public:
