@@ -62,22 +62,14 @@ void InfoBoard::draw_leaderboard() {
         string s = std::to_string(scores.at(i));
         // If the string is empty then put <Empty>
         if (!p.length()) p = "<Empty>";
-        fl_draw(p.c_str(),
-            x() + 115, y() + 5 + 40 * (i + 1),
-            75, 25, FL_ALIGN_LEFT);
-        fl_draw(s.c_str(),
-            x() + 210, y() + 5 + 40 * (i + 1),
-            25, 25, FL_ALIGN_RIGHT);
+        fl_draw(p.c_str(), x() + 115, y() + 5 + 40 * (i + 1), 75, 25, FL_ALIGN_LEFT);
+        fl_draw(s.c_str(), x() + 210, y() + 5 + 40 * (i + 1), 25, 25, FL_ALIGN_RIGHT);
     }
 
     // On the bottom draw the player score in red.
     fl_color(FL_RED);
-    fl_draw(player.c_str(),
-        x() + 115, y() + 40 * 6,
-        75, 25, FL_ALIGN_LEFT);
-    fl_draw(std::to_string(score).c_str(),
-        x() + 210, y() + 40 * 6,
-        25, 25, FL_ALIGN_RIGHT);
+    fl_draw(player.c_str(), x() + 115, y() + 40 * 6, 75, 25, FL_ALIGN_LEFT);
+    fl_draw(std::to_string(score).c_str(), x() + 210, y() + 40 * 6, 25, 25, FL_ALIGN_RIGHT);
 }
 
 
