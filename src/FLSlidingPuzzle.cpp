@@ -164,8 +164,8 @@ static void game_end(Fl_Widget* gboard, void*) {
     config->write();
 
     // Display a dialog to indicate win or lose
-    if (game->win()) fl_alert("You Win! Your score is %d.", score);
-    else fl_alert("Game Over! Your score is %d.", score);
+    if (game->win()) fl_alert("You Win, %s! Your score is %d.", player.c_str(), score);
+    else fl_alert("Game Over, %s! Your score is %d.", player.c_str(), score);
 
     // Ask the user whether start another game or quit
     switch(fl_choice("Do you want to play another game?", "No", "Yes", 0)) {
@@ -305,6 +305,8 @@ static void init_config(bool load = true) {
 // *** Splash Screen ***
 static void init_splash() {
     splash            = new Fl_Group(0,0,win->w(), win->h());
+    Fl_Box* main_bg_sky = new Fl_Box(0,0,win->w(), win->h());
+    main_bg_sky->image(img_sky);
     Fl_Box* main_bg   = new Fl_Box(0,0,win->w(), win->h());
     main_bg->image(img_splash);
     Fl_Button* start    = new Fl_Button(200,450,100,50,"New Game");
@@ -328,6 +330,8 @@ static void init_splash() {
 // *** Difficulty Selection ***
 static void init_difficulty() {
     difficulty            = new Fl_Group(0,0,win->w(),win->h());
+    Fl_Box* main_bg_sky = new Fl_Box(0,0,win->w(), win->h());
+    main_bg_sky->image(img_sky);
     Fl_Box* difficulty_bg = new Fl_Box(0,0,win->w(), win->h());
     difficulty_bg->image(img_difficulty);
     Fl_Button* easy       = new Fl_Button(150,450,100,50,"Easy");

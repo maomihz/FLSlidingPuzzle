@@ -45,6 +45,7 @@ vector<Direction> demo_remain = demo_steps;
 
 
 
+Fl_PNG_Image* img_sky =        new Fl_PNG_Image("res/sky.png");
 Fl_PNG_Image* img_splash =     new Fl_PNG_Image("res/splash.png");
 Fl_PNG_Image* img_difficulty = new Fl_PNG_Image("res/difficulty.png");
 Fl_PNG_Image* img_demo =       new Fl_PNG_Image("res/demo.png");
