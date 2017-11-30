@@ -22,7 +22,7 @@ all: $(TARGET) $(TESTS)
 board.o: src/board.cpp src/board.h
 game.o: src/game.cpp src/game.h
 point.o: src/point.cpp src/point.h
-FLSlidingPuzzle.o: src/FLSlidingPuzzle.cpp src/FLSlidingPuzzle.h src/GameBoard.h
+FLSlidingPuzzle.o: src/FLSlidingPuzzle.cpp src/FLSlidingPuzzle.h src/GameBoard.h src/preset.h
 GameBoard.o: src/GameBoard.cpp src/GameBoard.h
 InfoBoard.o: src/InfoBoard.cpp src/InfoBoard.h
 HelpPanel.o: src/HelpPanel.cpp src/HelpPanel.h
