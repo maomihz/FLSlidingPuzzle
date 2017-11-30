@@ -5,15 +5,7 @@
 #include <sstream>
 #include <iomanip>
 
-void InfoBoard::draw() {
-    // Call the draw function of the parent
-    Fl_Box::draw();
-
-    // Draw the text
-    fl_color(FL_BLACK);
-    fl_font(fl_font(), 15);
-
-
+void InfoBoard::draw_steps() {
     // Build the step
     std::stringstream ss_steps;
     // Depending on whether the game is in "puzzle mode" or "free mode",
@@ -28,7 +20,10 @@ void InfoBoard::draw() {
     fl_draw(ss_steps.str().c_str(),
         x(), y() + 50,
         100, 25, FL_ALIGN_INSIDE);
+}
 
+
+void InfoBoard::draw_progress() {
     // Show how many tiles are in the correct location
     fl_draw("Progress", x(), y() + 110, 100, 25, FL_ALIGN_INSIDE);
     std::stringstream ss_progress;
@@ -36,7 +31,10 @@ void InfoBoard::draw() {
     ss_progress << "/";
     ss_progress << game->board().len() - 1;
     fl_draw(ss_progress.str().c_str(), x(), y() + 135, 100, 25, FL_ALIGN_INSIDE);
+}
 
+
+void InfoBoard::draw_time() {
     // build the game time
     int duration = game->duration();
     std::stringstream ss_time;
@@ -48,13 +46,14 @@ void InfoBoard::draw() {
     fl_draw(ss_time.str().c_str(),
         x(), y() + 225,
         100, 25, FL_ALIGN_INSIDE);
+}
 
+
+void InfoBoard::draw_leaderboard() {
     // Draw the high scores
     fl_draw("LEADERBOARD", x() + 125, y() + 5, 100, 25, FL_ALIGN_INSIDE);
     int score = game->score();
     string player = config->get<string>("player.name");
-    // Magic insertion
-    // magic_insert(score, player, scores, players);
 
     for (string::size_type i = 0; i < scores.size(); ++i) {
         string p = players.at(i);
@@ -76,6 +75,22 @@ void InfoBoard::draw() {
     fl_draw(std::to_string(score).c_str(),
         x() + 210, y() + 40 * 6,
         25, 25, FL_ALIGN_RIGHT);
+}
+
+
+void InfoBoard::draw() {
+    // Call the draw function of the parent
+    Fl_Box::draw();
+
+    // Set the text
+    fl_color(FL_BLACK);
+    fl_font(fl_font(), 15);
+
+    // Draw Everything
+    draw_steps();
+    draw_progress();
+    draw_time();
+    draw_leaderboard();
 }
 
 void InfoBoard::update() {

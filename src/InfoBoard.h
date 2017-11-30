@@ -17,6 +17,11 @@ class InfoBoard : public Fl_Box {
 private:
     vector<int> scores;
     vector<string> players;
+
+    void draw_steps();
+    void draw_progress();
+    void draw_time();
+    void draw_leaderboard();
 public:
     SPuzzle::Game* game;   // The game the board represents
     ConfigParser* config; // The global configuration,

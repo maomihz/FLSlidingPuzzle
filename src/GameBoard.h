@@ -21,6 +21,8 @@ private:
     void handle_keyboard(int key);
     void handle_mouse(int ex, int ey);
     void handle_mouse_move(int ex, int ey);
+    void draw_image(int i, int j, int num);
+    void draw_border(int i, int j);
 public:
     Game* game;        // The game the board represents
     Fl_Image* image;   // The image that is displayed on screen

@@ -17,7 +17,7 @@ int HelpPanel::handle(int event) {
     return Fl_Box::handle(event);
 }
 
-int HelpPanel::reset() {
+void HelpPanel::reset() {
     current_image = 0;
     image(images.at(0));
 }

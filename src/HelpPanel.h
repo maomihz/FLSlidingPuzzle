@@ -24,5 +24,5 @@ public:
     int handle(int event);
 
     // Reset to the first image
-    int reset();
+    void reset();
 };
