@@ -1,5 +1,11 @@
 # FL Sliding Puzzle
 
+热烈庆祝学期结束，猫猫的 Sliding Puzzle 已开源！！
+
+As celebration of the end of semester, the FLTK Sliding Puzzle is now open source!
+
+-----
+
 Howdy fellow programmers, welcome to the world of Computer Science!
 
 Here we present to you an addictive game, the sliding puzzle! It is actually our final project for CSCE121, but let's still have some fun from the project. I hope that everyone can learn something by doing the project.
@@ -18,7 +24,7 @@ Checklist:
 ### 1. Clone this repository
 
 ```
-git clone https://github.tamu.edu/maomihz/FL-Sliding-Puzzle.git
+git clone https://github.com/maomihz/FL-Sliding-Puzzle.git
 cd FL-Sliding-Puzzle
 ```
 
@@ -40,12 +46,12 @@ Make sure that FLTK is installed and put in PATH. Please refer to official docum
 
 
 ## To Do List
-- [ ] Fancy Splash Button
-- [ ] Fancy Game Background
-- [ ] Help screen
+- [x] Fancy Splash Button
+- [x] Fancy Game Background
+- [x] Help screen
 - [ ] Interactive help screen
-- [ ] About screen
-- [ ] Pause game
-- [ ] Configuration & Leaderboard
+- [x] About screen
+- [x] Pause game
+- [x] Configuration & Leaderboard
 - [ ] 2048
-- [ ] Animation on moving tiles
+- [x] Animation on moving tiles
